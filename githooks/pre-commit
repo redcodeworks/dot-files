@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Enabled with `just setup-hooks`. Blocks a commit that would add personal or secret data.
+exec "$(git rev-parse --show-toplevel)/tools/leak-check.sh" --staged --strict

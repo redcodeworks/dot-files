@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Name of the GNOME Shell theme (needs the user-theme extension and a theme of that name in ~/.themes).
+# Load:   dconf load /org/gnome/shell/extensions/user-theme/ < 50-shell-theme.dconf
+# Undo:   dconf reset -f /org/gnome/shell/extensions/user-theme/
+[/]
+name='Gruvbox-Material-Shell-Dark'

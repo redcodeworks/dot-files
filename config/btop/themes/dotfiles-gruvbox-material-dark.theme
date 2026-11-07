@@ -1,0 +1,55 @@
+# btop theme: Gruvbox Material, dark variant MEDIUM (bg0 #282828). Static; colours only.
+# Select it in btop.conf with:  color_theme = "dotfiles-gruvbox-material-dark"
+# Based on the structure of btop's bundled gruvbox_material_dark.theme (btop 1.4.7), re-mapped by role:
+# the bundled file uses inactive_fg = main_bg (#282828, invisible) and graph_text #665c54 (2.0:1);
+# here inactive_fg is grey1 #928374 (4.0:1, documented exception for dim text) and graph_text grey2 #a89984 (5.3:1).
+# Colours: "#RRGGBB". Empty mid/end = single-colour graph.
+
+theme[main_bg]="#282828"
+theme[main_fg]="#d4be98"
+theme[title]="#d4be98"
+theme[hi_fg]="#ea6962"
+theme[selected_bg]="#45403d"
+theme[selected_fg]="#d4be98"
+theme[inactive_fg]="#928374"
+theme[graph_text]="#a89984"
+theme[meter_bg]="#45403d"
+theme[proc_misc]="#89b482"
+
+theme[cpu_box]="#7daea3"
+theme[mem_box]="#a9b665"
+theme[net_box]="#d3869b"
+theme[proc_box]="#89b482"
+theme[div_line]="#7c6f64"
+
+theme[temp_start]="#7daea3"
+theme[temp_mid]="#d8a657"
+theme[temp_end]="#ea6962"
+
+theme[cpu_start]="#a9b665"
+theme[cpu_mid]="#d8a657"
+theme[cpu_end]="#ea6962"
+
+theme[free_start]="#89b482"
+theme[free_mid]=""
+theme[free_end]=""
+
+theme[cached_start]="#7daea3"
+theme[cached_mid]=""
+theme[cached_end]=""
+
+theme[available_start]="#d8a657"
+theme[available_mid]=""
+theme[available_end]=""
+
+theme[used_start]="#ea6962"
+theme[used_mid]=""
+theme[used_end]=""
+
+theme[download_start]="#89b482"
+theme[download_mid]="#d8a657"
+theme[download_end]="#ea6962"
+
+theme[upload_start]="#d3869b"
+theme[upload_mid]="#e78a4e"
+theme[upload_end]="#ea6962"

@@ -1,0 +1,88 @@
+// SPDX-License-Identifier: MIT
+// Noctalia shell on niri: start it, bind its panels, and set up blur and layer rules.
+// Needs Noctalia installed. See also noctalia/config.example.toml (it must turn on its polkit agent,
+// because niri has none and no other agent should run next to it).
+
+spawn-at-startup "noctalia"
+
+window-rule {
+    // Rounded corners, with window contents clipped to them.
+    geometry-corner-radius 20
+    clip-to-geometry true
+}
+
+// Floating Noctalia settings window.
+window-rule {
+    match app-id="dev.noctalia.Noctalia"
+    open-floating true
+    default-column-width { fixed 1080; }
+    default-window-height { fixed 920; }
+}
+
+debug {
+    // Allows notification actions and window activation from Noctalia.
+    honor-xdg-activation-with-invalid-serial
+}
+
+binds {
+    Mod+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
+    Mod+S { spawn-sh "noctalia msg panel-toggle control-center"; }
+    Mod+Comma { spawn-sh "noctalia msg settings-toggle"; }
+    // niri also has a built-in window switcher.
+    Alt+Tab { spawn-sh "noctalia msg window-switcher"; }
+
+    XF86AudioRaiseVolume { spawn-sh "noctalia msg volume-up"; }
+    XF86AudioLowerVolume { spawn-sh "noctalia msg volume-down"; }
+    XF86AudioMute { spawn-sh "noctalia msg volume-mute"; }
+    XF86MonBrightnessUp { spawn-sh "noctalia msg brightness-up"; }
+    XF86MonBrightnessDown { spawn-sh "noctalia msg brightness-down"; }
+}
+
+// Wallpaper on the backdrop, with a transparent workspace background so the backdrop is always visible.
+layer-rule {
+    match namespace="^noctalia-wallpaper"
+    place-within-backdrop true
+}
+
+layout {
+    background-color "transparent"
+}
+
+// No workspace shadows in the overview.
+overview {
+    workspace-shadow {
+        off
+    }
+}
+
+// Blur every app, without xray so it looks more realistic.
+window-rule {
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+// Noctalia publishes blur regions itself when ext-background-effects is available; just disable xray.
+layer-rule {
+    match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"
+    background-effect {
+        xray false
+    }
+}
+
+layer-rule {
+    match namespace="noctalia-window-switcher"
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+// Global blur strength.
+blur {
+    passes 2        // more passes = stronger blur (default: 3)
+    offset 3.0      // sample distance per pass (default: 3.0)
+    noise 0.03      // grain overlay (default: 0.02)
+    saturation 1.0  // colour saturation boost (default: 1.5)
+}

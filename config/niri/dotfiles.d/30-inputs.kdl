@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: MIT
+// Input settings. With no xkb block niri takes the layout from systemd-localed (`localectl set-x11-keymap`).
+// Only the options that differ from niri's defaults are set here.
+
+input {
+    keyboard {
+        // Turn numlock on at startup.
+        numlock
+    }
+
+    touchpad {
+        drag-lock
+        click-method "clickfinger"
+        scroll-factor 0.3
+    }
+}

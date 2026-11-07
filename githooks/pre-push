@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Enabled with `just setup-hooks`. Full scan of the tree and of EVERY commit before anything leaves this machine.
+root="$(git rev-parse --show-toplevel)"
+"$root/tools/leak-check.sh" --strict && "$root/tools/leak-check.sh" --history

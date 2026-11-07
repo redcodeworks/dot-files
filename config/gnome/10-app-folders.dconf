@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: MIT
+# GNOME app grid folders that fill themselves from each app's .desktop Categories= (no per-app lists).
+# Load:   dconf load /org/gnome/desktop/app-folders/ < 10-app-folders.dconf
+# This REPLACES your folder list (folder-children). Back up first: dconf dump /org/gnome/desktop/app-folders/
+# Undo:   dconf reset -f /org/gnome/desktop/app-folders/
+[/]
+folder-children=['Accessories', 'Education', 'Games', 'Internet', 'Office', 'Programming', 'SoundVideo', 'System', 'Utilities', 'Graphics']
+
+[folders/Accessories]
+categories=['Accessibility']
+name='Accessories'
+
+[folders/Education]
+categories=['Education']
+name='Education'
+
+[folders/Games]
+categories=['Game']
+name='Games'
+translate=false
+
+[folders/Graphics]
+categories=['Graphics']
+name='Graphics'
+
+[folders/Internet]
+categories=['Network']
+name='Internet'
+
+[folders/Office]
+categories=['Office']
+name='Office'
+
+[folders/Programming]
+categories=['Development']
+name='Programming'
+
+[folders/SoundVideo]
+categories=['AudioVideo']
+name='Sound & Video'
+
+[folders/System]
+categories=['System', 'Settings']
+name='System Tools'
+
+[folders/Utilities]
+categories=['Utility']
+name='Utilities'

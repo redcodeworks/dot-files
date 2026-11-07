@@ -1,0 +1,33 @@
+Third-party material in dot-files
+
+The root LICENSE (MIT) covers everything in this repository unless a file's SPDX-License-Identifier header or
+this NOTICE says otherwise. Full licence texts for the exceptions are in LICENSES/.
+
+Colour palettes
+  Gruvbox Material, https://github.com/sainnhe/gruvbox-material, MIT, Copyright (c) 2020 sainnhe.
+  Gruvbox, https://github.com/morhetz/gruvbox, declared MIT/X11 (its repository has no LICENSE file).
+  Their colour values are used across the colour files (terminals, btop, eza, lazygit, zellij, yazi
+  and niri settings). Only the colour values are used.
+
+btop theme (Apache-2.0)
+  config/btop/themes/dotfiles-gruvbox-material-dark.theme is adapted from, and changed against, btop's bundled
+  gruvbox_material_dark theme (btop, https://github.com/aristocratos/btop, Apache-2.0). The colour roles were
+  re-mapped. Licence text: LICENSES/Apache-2.0.txt.
+
+niri default configuration (GPL-3.0-or-later)
+  niri, https://github.com/YaLTeR/niri. These files reproduce comments, values and bind lines from niri's
+  default-config.kdl and are therefore GPL-3.0-or-later (see their SPDX headers):
+    config/niri/config.example.kdl
+    config/niri/dotfiles.d/31-layout.kdl
+    config/niri/dotfiles.d/40-binds-navigation.kdl
+    config/niri/dotfiles.d/50-window-rules.kdl
+  The other niri fragments are original and MIT. Licence text: LICENSES/GPL-3.0-or-later.txt.
+
+Yazi
+  config/fish/functions/y.fish is adapted from the shell wrapper in the Yazi documentation
+  (https://yazi-rs.github.io, Yazi is MIT).
+
+Not shipped (install them from their own sources, under their own licences)
+  Papirus icon theme (GPL-3.0); GTK, libadwaita and GNOME Shell themes (see the gnome-themes repo);
+  GNOME Shell extensions (Dash to Dock, Forge, User Themes and others); yazi plugins and the yazi
+  gruvbox-material flavor; the fonts named in the configs (JetBrains Mono and Adwaita Mono Nerd Fonts).

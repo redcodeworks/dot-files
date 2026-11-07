@@ -1,0 +1,14 @@
+# Index of the dot-files Ghostty fragments. Add this ONE line to your own ~/.config/ghostty/config(.ghostty):
+#
+#   config-file = ?dotfiles.ghostty
+#
+# (the leading ? makes the include optional; paths are relative to the including file).
+# Files named by config-file are loaded AFTER the whole file that contains the directive, so these fragments
+# override your own settings in that same file. To override a fragment, put your settings in a second file
+# loaded after it:
+#
+#   config-file = ?dotfiles.ghostty
+#   config-file = ?my.ghostty
+config-file = ?dotfiles.d/10-dotfiles-appearance.ghostty
+config-file = ?dotfiles.d/20-dotfiles-behaviour.ghostty
+config-file = ?dotfiles.d/30-dotfiles-keybinds.ghostty

@@ -1,0 +1,38 @@
+# goto_split on the right-hand arrows of a US layout (; apostrophe [ /), Ctrl+Shift = terminal
+keybind = ctrl+shift+semicolon=goto_split:left
+keybind = ctrl+shift+apostrophe=goto_split:right
+keybind = ctrl+shift+bracket_left=goto_split:up
+keybind = ctrl+shift+slash=goto_split:down
+
+# Tab switching, Ctrl+Shift = terminal tier. L and . are previous/next tab (like workspace
+# up/down); digits 1-8 jump to a tab. The last tab is alt+9 (Ghostty default); ctrl+shift+9 and 0
+# are the Konsole-style splits below.
+# Ghostty's defaults stay active too: ctrl+tab / ctrl+shift+tab, ctrl+page_up/down,
+# ctrl+shift+arrow_left/right, alt+1..8 and alt+9 (last tab).
+keybind = ctrl+shift+l=previous_tab
+keybind = ctrl+shift+period=next_tab
+keybind = ctrl+shift+digit_1=goto_tab:1
+keybind = ctrl+shift+digit_2=goto_tab:2
+keybind = ctrl+shift+digit_3=goto_tab:3
+keybind = ctrl+shift+digit_4=goto_tab:4
+keybind = ctrl+shift+digit_5=goto_tab:5
+keybind = ctrl+shift+digit_6=goto_tab:6
+keybind = ctrl+shift+digit_7=goto_tab:7
+keybind = ctrl+shift+digit_8=goto_tab:8
+
+# Splits, Ctrl+Shift = terminal tier. Adding already works through Ghostty's defaults
+# (ctrl+shift+o = new_split:right, ctrl+shift+e = new_split:down); nothing by default closes
+# just one split (ctrl+shift+w closes the whole tab), so: x closes the focused split (the
+# last split closes its tab), backslash evens out the split sizes.
+keybind = ctrl+shift+x=close_surface
+keybind = ctrl+shift+backslash=equalize_splits
+# Split size: Ghostty only moves a divider in a direction (no "grow the focused pane"), so
+# = moves the divider right (the left pane grows, the right one shrinks) and - moves it left.
+# Vertical stays on the defaults, super+ctrl+shift+arrow_up/down.
+keybind = ctrl+shift+equal=resize_split:right,20
+keybind = ctrl+shift+minus=resize_split:left,20
+
+# Konsole-style splits: Ctrl+Shift+( and Ctrl+Shift+) are Ctrl+Shift+9 and Ctrl+Shift+0 on a US layout
+# (physical digit keys). ( = left/right (new pane on the right), ) = top/bottom (new pane below).
+keybind = ctrl+shift+digit_9=new_split:right
+keybind = ctrl+shift+digit_0=new_split:down

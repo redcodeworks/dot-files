@@ -1,0 +1,94 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Parts of this file (values, comments, bind lines) follow niri's default-config.kdl, see NOTICE.
+// Core binds: terminal, launcher, lock, media keys and Mod-based navigation.
+// Convention: Mod = focus, Mod+Shift = move. 41-binds-meh-hyper.kdl repeats the same actions on a
+// Ctrl+Shift+Alt ("Meh") layer so behaviour is the same whatever keyboard is plugged in.
+// Everything here uses `ghostty`, `fuzzel`, `swaylock`, `playerctl` and `wpctl`; swap them for your own.
+
+binds {
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    F1 { show-hotkey-overlay; }
+
+    Mod+Return hotkey-overlay-title="Open a Terminal: ghostty" { spawn "ghostty"; }
+    // niri has no splits (scrolling columns), so these spawn a terminal into a new column, or spawn it and
+    // fold it into the current column. The sleep is a heuristic wait for the new window to take focus.
+    Ctrl+parenleft hotkey-overlay-title="Open Ghostty (new column, side by side)" { spawn "ghostty"; }
+    Ctrl+parenright hotkey-overlay-title="Open Ghostty (stacked in current column)" { spawn-sh "ghostty & sleep 0.3; niri msg action focus-column-left; niri msg action consume-window-into-column"; }
+    Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel" "--width=60"; }
+    // niri provides ext-session-lock; `loginctl lock-session` does not lock on its own here.
+    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+
+    // Volume and media chords (Super+Alt, same in GNOME), usable on the lock screen.
+    // Volume: A down, S up, D mute, F mic mute.  Media: Q previous, W next, E play/pause, R stop.
+    // Volume goes through Noctalia (60-noctalia.kdl); change these to wpctl if you do not run it.
+    Super+Alt+A allow-when-locked=true { spawn-sh "noctalia msg volume-down"; }
+    Super+Alt+S allow-when-locked=true { spawn-sh "noctalia msg volume-up"; }
+    Super+Alt+D allow-when-locked=true { spawn-sh "noctalia msg volume-mute"; }
+    Super+Alt+F allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    Super+Alt+Q allow-when-locked=true { spawn-sh "playerctl previous"; }
+    Super+Alt+W allow-when-locked=true { spawn-sh "playerctl next"; }
+    Super+Alt+E allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    Super+Alt+R allow-when-locked=true { spawn-sh "playerctl stop"; }
+
+    Mod+O repeat=false { toggle-overview; }
+
+    Ctrl+Shift+Alt+Backspace repeat=false { close-window; }
+
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+    Mod+L { focus-column-right; }
+
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+J { move-window-down; }
+    Mod+Shift+K { move-window-up; }
+    Mod+Shift+L { move-column-right; }
+
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+    Mod+Shift+Home { move-column-to-first; }
+    Mod+Shift+End  { move-column-to-last; }
+
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up   { focus-workspace-up; }
+    Mod+Shift+Page_Down { move-column-to-workspace-down; }
+    Mod+Shift+Page_Up   { move-column-to-workspace-up; }
+
+    Mod+N { consume-or-expel-window-left; }
+    Mod+M { consume-or-expel-window-right; }
+    Mod+Shift+N { consume-window-into-column; }
+    Mod+Shift+M { expel-window-from-column; }
+
+    Mod+R { switch-preset-column-width; }
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+C { center-column; }
+    Mod+Shift+C { center-visible-columns; }
+
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+
+    // Escape hatches for remote-desktop clients and software KVMs that ask niri to stop processing shortcuts.
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    Mod+G { toggle-keyboard-shortcuts-inhibit; }
+}

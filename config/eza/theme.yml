@@ -1,0 +1,106 @@
+# eza theme: Gruvbox Material, dark variant MEDIUM (bg0 #282828). Static; colours only.
+# Format: eza_colors-explanation(5). eza 0.23.5. Read from $XDG_CONFIG_HOME/eza/theme.yml.
+# Palette: fg #d4be98  red #ea6962  orange #e78a4e  yellow #d8a657  green #a9b665
+#          aqua #89b482  blue #7daea3  purple #d3869b  grey1 #928374  grey2 #a89984
+# All text >= 4.5:1 on #282828 except grey1 #928374 (4.0:1, documented exception for
+# secondary text: punctuation, dates, inode/blocks, flags, git ignored, temp files).
+# EZA_COLORS / LS_COLORS, if ever set, override this file; none are set by default.
+
+filekinds:
+  normal: {foreground: "#d4be98"}
+  directory: {foreground: "#7daea3", is_bold: true}
+  symlink: {foreground: "#89b482"}
+  pipe: {foreground: "#d8a657"}
+  block_device: {foreground: "#e78a4e", is_bold: true}
+  char_device: {foreground: "#e78a4e", is_bold: true}
+  socket: {foreground: "#d3869b"}
+  special: {foreground: "#d3869b"}
+  executable: {foreground: "#a9b665", is_bold: true}
+  mount_point: {foreground: "#7daea3", is_bold: true, is_underline: true}
+
+perms:
+  user_read: {foreground: "#d8a657"}
+  user_write: {foreground: "#ea6962"}
+  user_execute_file: {foreground: "#a9b665", is_underline: true}
+  user_execute_other: {foreground: "#a9b665", is_underline: true}
+  group_read: {foreground: "#d8a657"}
+  group_write: {foreground: "#ea6962"}
+  group_execute: {foreground: "#a9b665"}
+  other_read: {foreground: "#d8a657"}
+  other_write: {foreground: "#ea6962"}
+  other_execute: {foreground: "#a9b665"}
+  special_user_file: {foreground: "#d3869b"}
+  special_other: {foreground: "#d3869b"}
+  attribute: {foreground: "#a89984"}
+
+size:
+  major: {foreground: "#a9b665"}
+  minor: {foreground: "#89b482"}
+  number_byte: {foreground: "#a9b665"}
+  number_kilo: {foreground: "#a9b665"}
+  number_mega: {foreground: "#d8a657"}
+  number_giga: {foreground: "#e78a4e"}
+  number_huge: {foreground: "#ea6962"}
+  unit_byte: {foreground: "#a89984"}
+  unit_kilo: {foreground: "#a89984"}
+  unit_mega: {foreground: "#a89984"}
+  unit_giga: {foreground: "#a89984"}
+  unit_huge: {foreground: "#a89984"}
+
+users:
+  user_you: {foreground: "#d8a657"}
+  user_root: {foreground: "#ea6962"}
+  user_other: {foreground: "#a89984"}
+  group_yours: {foreground: "#d8a657"}
+  group_other: {foreground: "#a89984"}
+  group_root: {foreground: "#ea6962"}
+
+links:
+  normal: {foreground: "#d3869b"}
+  multi_link_file: {foreground: "#e78a4e"}
+
+git:
+  new: {foreground: "#a9b665"}
+  modified: {foreground: "#d8a657"}
+  deleted: {foreground: "#ea6962"}
+  renamed: {foreground: "#89b482"}
+  ignored: {foreground: "#928374"}
+  conflicted: {foreground: "#e78a4e", is_bold: true}
+
+git_repo:
+  branch_main: {foreground: "#a9b665"}
+  branch_other: {foreground: "#d3869b"}
+  git_clean: {foreground: "#a9b665"}
+  git_dirty: {foreground: "#d8a657"}
+
+security_context:
+  none: {foreground: "#928374"}
+  selinux:
+    colon: {foreground: "#928374"}
+    user: {foreground: "#7daea3"}
+    role: {foreground: "#d3869b"}
+    typ: {foreground: "#d8a657"}
+    range: {foreground: "#a9b665"}
+
+file_type:
+  image: {foreground: "#d3869b"}
+  video: {foreground: "#d3869b", is_bold: true}
+  music: {foreground: "#e78a4e"}
+  crypto: {foreground: "#ea6962"}
+  document: {foreground: "#a9b665"}
+  compressed: {foreground: "#d8a657"}
+  temp: {foreground: "#928374"}
+  compiled: {foreground: "#e78a4e"}
+  build: {foreground: "#d8a657", is_bold: true}
+  source: {foreground: "#89b482"}
+
+punctuation: {foreground: "#928374"}
+date: {foreground: "#928374"}
+inode: {foreground: "#d3869b"}
+blocks: {foreground: "#928374"}
+header: {foreground: "#d4be98", is_underline: true}
+octal: {foreground: "#d3869b"}
+flags: {foreground: "#d3869b"}
+control_char: {foreground: "#ea6962"}
+broken_symlink: {foreground: "#ea6962"}
+broken_path_overlay: {foreground: "#928374", is_underline: true}

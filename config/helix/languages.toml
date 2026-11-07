@@ -1,0 +1,79 @@
+[[language]]
+name = "rust"
+language-servers = ["rust-analyzer"]
+formatter = { command = "rustfmt", args = ["--edition", "2021"] }
+auto-format = true
+
+[language-server.rust-analyzer]
+command = "rust-analyzer"
+
+[language-server.rust-analyzer.config]
+check = { command = "clippy", features = "all" }
+diagnostics = { experimental = { enable = true } }
+inlayHints = { bindingModeHints = { enable = true }, closureCaptureHints = { enable = true }, closureReturnTypeHints = { enable = "always" } }
+
+[[debugger]]
+name = "lldb-dap"
+transport = "stdio"
+command = "lldb-dap"
+
+[[debugger.templates]]
+name = "binary"
+request = "launch"
+completion = [{ name = "binary", completion = "filename" }]
+args = { program = "{0}" }
+
+[[debugger.templates]]
+name = "binary (args)"
+request = "launch"
+completion = [{ name = "binary", completion = "filename" }, { name = "args", completion = "none" }]
+args = { program = "{0}", args = ["{1}"] }
+
+[[debugger.templates]]
+name = "attach (pid)"
+request = "attach"
+completion = [{ name = "pid", completion = "pid" }]
+args = { pid = "{0}" }
+
+[[language]]
+name = "python"
+formatter = { command = "ruff", args = ["format", "-"] }
+
+[[language]]
+name = "sql"
+language-servers = ["sql-language-server"]
+formatter = { command = "sqlfluff", args = ["format", "--dialect", "ansi", "-"] }
+
+[language-server.sql-language-server]
+command = "sql-language-server"
+args = ["up", "--method", "stdio"]
+
+[[language]]
+name = "java"
+formatter = { command = "google-java-format", args = ["-"] }
+
+[[language]]
+name = "lua"
+formatter = { command = "stylua", args = ["-"] }
+
+[[language]]
+name = "toml"
+formatter = { command = "taplo", args = ["format", "-"] }
+
+[[language]]
+name = "html"
+formatter = { command = "prettier", args = ["--parser", "html"] }
+
+[[language]]
+name = "css"
+formatter = { command = "prettier", args = ["--parser", "css"] }
+
+[[language]]
+name = "json"
+formatter = { command = "prettier", args = ["--parser", "json"] }
+
+[[language]]
+name = "javascript"
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+
+
