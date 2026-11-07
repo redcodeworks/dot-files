@@ -17,7 +17,7 @@ printf 'layout {}\n' > "$T/src/niri/config.kdl"
 printf '#!/bin/sh\necho hi\n' > "$T/src/niri/run.sh"; chmod +x "$T/src/niri/run.sh"
 printf 'font-size = 11\n' > "$T/src/ghostty/config"
 export DOT_SRC="$T/src" DOT_DEST="$T/dest" DOT_STATE="$T/state"
-D=tools/dotctl.sh; cd "$root"
+D=tools/dotctl.sh; cd "$root" || exit 1
 $D install --dry-run >/dev/null; [ ! -e "$T/dest" ] && chk ok "dry run writes nothing" || chk fail "dry run wrote files"
 $D install >/dev/null
 eq "$(find "$T/dest" -type f | wc -l | tr -d ' ')" 4 "install copies every file"
@@ -73,6 +73,7 @@ done
 echo "=== leak-check"
 L="$T/leak"; mkdir -p "$L" && cp -r tools githooks .gitignore "$L/" && mkdir -p "$L/config/app" && (cd "$L" && git init -q)
 echo '# Example config' > "$L/config/app/clean.conf"; echo 'font = mono' >> "$L/config/app/clean.conf"
+# shellcheck disable=SC2120
 lc() { (cd "$L" && git add -A -f >/dev/null 2>&1; LEAK_PATTERNS_FILE="${LEAK_PATTERNS_FILE:-/nonexistent}" tools/leak-check.sh "$@" 2>&1); }
 lc | grep -q "leak-check: clean" && chk ok "clean tree passes" || chk fail "clean tree flagged"
 # fake secrets, assembled from pieces so that this file itself stays clean
@@ -166,7 +167,7 @@ lc | grep -q "\[email\]" && chk fail "the git user.email was flagged" || chk ok 
 echo "notes" > "$L/AGENTS.md"; lc | grep -q "AGENTS.md is outside" && chk fail "AGENTS.md rejected by the allow-list" || chk ok "AGENTS.md is on the allow-list"; rm -f "$L/AGENTS.md"
 
 echo "=== this repo"
-cd "$root"; r=$(tools/leak-check.sh 2>&1); echo "$r" | tail -1 | grep -q "clean" && chk ok "tools/leak-check.sh is clean on this repo" || { chk fail "leak-check findings on this repo"; echo "$r" | head -10; }
+cd "$root" || exit 1; r=$(tools/leak-check.sh 2>&1); echo "$r" | tail -1 | grep -q "clean" && chk ok "tools/leak-check.sh is clean on this repo" || { chk fail "leak-check findings on this repo"; echo "$r" | head -10; }
 for f in tools/*.sh githooks/*; do bash -n "$f" && chk ok "bash -n $f" || chk fail "bash -n $f"; done
 if command -v shellcheck >/dev/null 2>&1; then shellcheck -S warning tools/*.sh >/dev/null 2>&1 && chk ok "shellcheck" || { chk fail "shellcheck"; shellcheck -S warning tools/*.sh | head; }; else echo "  skip shellcheck (not installed)"; fi
 

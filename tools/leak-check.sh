@@ -15,7 +15,7 @@
 # A line containing "leak-check: allow" is skipped for the harmless classes only (e-mail, IP, MAC, home path, machine
 # id, monitor name). It never silences keys, tokens, credential assignments, ssh keys or your personal strings.
 set -uo pipefail
-root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd); cd "$root"
+root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd); cd "$root" || exit 1
 staged=0; strict=0; history=0
 for a in "$@"; do case "$a" in --staged) staged=1 ;; --strict) strict=1 ;; --history) history=1 ;; *) echo "unknown option $a" >&2; exit 2 ;; esac; done
 bad=0
@@ -52,8 +52,8 @@ classes=(
 )
 ok_user='user|username|you|example|name|linuxbrew|youruser|me'   # placeholders allowed after /home/ and /Users/ ...
 
-# the owner's declared public identity (this repo's git user.email) may appear, e.g. in LICENSE
-pub_email=$(git config user.email 2>/dev/null || true)
+# the owner's declared public identity (this repo's git user.email and the commit authors) may appear, e.g. in LICENSE
+pub_emails=$(printf '%s\n' "$(git config user.email 2>/dev/null)" ; git log --all --format='%ae' 2>/dev/null)   # configured identity and every commit author
 
 # ---- file list ------------------------------------------------------------------------------------------------
 files=()
@@ -97,7 +97,7 @@ scan_text() {
         case "$rest" in *"leak-check: allow"*) continue ;; esac
         m=$(printf '%s' "$rest" | grep -oE "$emailre" | head -1)
         case "$m" in *@example.*|*@users.noreply.github.com|noreply@*|*@localhost|"") continue ;; esac
-        [ -n "$pub_email" ] && [ "$m" = "$pub_email" ] && continue
+        printf '%s\n' "$pub_emails" | grep -qxF -- "$m" && continue
         say "$shown:$ln [email] $m"
     done < <(grep -n -E "$emailre" "$content" 2>/dev/null)
 }
