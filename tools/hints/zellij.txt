@@ -1,0 +1,1 @@
+Put `theme "dotfiles-gruvbox-material-dark"` in zellij's `config.kdl`; start the layout with `zellij --layout dotfiles-yazelix`.

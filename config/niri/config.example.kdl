@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Parts of the comments and bind lines here come from niri's default-config.kdl (GPL-3.0-or-later), see NOTICE.
+// Example niri config.kdl that pulls in the dot-files fragments. It is an EXAMPLE: it is installed as
+// config.example.kdl and never touches your own config.kdl. Copy the lines you want into your config.kdl.
+// All fragments live in ~/.config/niri/dotfiles.d/ and are numbered; every `include` path is relative to
+// the file that contains it. Remove or comment out any line you do not want. Niri merges `binds`,
+// `window-rule`, `layer-rule` and `environment` blocks from included files; for a bind defined twice
+// the later definition wins, so keep your own binds below the includes.
+// Needs niri 25.11 or newer (older versions have no `include`). Every included file must exist, or niri
+// refuses the whole config (a deleted fragment breaks it): comment the line out, or write
+// `include optional=true "..."`. `struts` and `preset-column-widths` REPLACE your own values rather than merge.
+// Reference: https://yalter.github.io/niri/Configuration:-Introduction
+
+include "dotfiles.d/10-environment.kdl"
+include "dotfiles.d/20-workspaces.kdl"
+include "dotfiles.d/30-inputs.kdl"
+include "dotfiles.d/31-layout.kdl"
+include "dotfiles.d/32-gestures.kdl"
+include "dotfiles.d/40-binds-navigation.kdl"
+include "dotfiles.d/41-binds-meh-hyper.kdl"
+include "dotfiles.d/42-binds-apps.kdl"
+include "dotfiles.d/50-window-rules.kdl"
+include "dotfiles.d/51-workspace-routing.kdl"
+// Noctalia shell, OFF by default. It needs Noctalia installed, it starts it, and it changes global settings:
+// window corner radius, blur on every window, a transparent workspace background, and it enables the niri
+// debug flag `honor-xdg-activation-with-invalid-serial` (lets a client take focus with an activation token
+// niri cannot verify, which weakens niri's focus-steal protection). The binds that run `noctalia msg ...`
+// (in this file's fragments 40-binds-navigation and the Noctalia fragment) do nothing without Noctalia.
+// include "dotfiles.d/60-noctalia.kdl"
+
+// Outputs (monitors) are machine specific and are NOT shipped. Find your connector names with
+// `niri msg outputs`, then add one block per monitor, for example:
+// output "DP-1" {
+//     mode "2560x1440@144.000"
+//     scale 1.0
+//     transform "normal"
+//     position x=0 y=0
+//     variable-refresh-rate on-demand=true
+// }

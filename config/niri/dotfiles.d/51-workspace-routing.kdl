@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: MIT
+// Send common apps to the named workspaces from 20-workspaces.kdl (General, Web, Media, Games).
+// niri matches app-id with a regular expression; check ids with `niri msg windows` (a .desktop file's
+// declared StartupWMClass is not always what the live app-id is). Add your own apps as extra match lines.
+// Needs the four named workspaces: include 20-workspaces.kdl, or edit the names here.
+
+window-rule {
+    match app-id=r#"^libreoffice-"#
+    match app-id=r#"^virt-manager$|^gitg$"#
+    open-on-workspace "General"
+}
+
+window-rule {
+    match app-id=r#"^firefox$|^org\.mozilla\.firefox$|^org\.chromium\.Chromium$|^org\.gnome\.Epiphany$"#
+    open-on-workspace "Web"
+}
+
+window-rule {
+    match app-id=r#"^mpv$|^org\.gnome\.Decibels$|^org\.gnome\.Podcasts$|^org\.gnome\.Showtime$"#
+    match app-id=r#"^org\.gnome\.(Calendar|Contacts|Music)$"#
+    match app-id=r#"^org\.telegram\.desktop$|^org\.mozilla\.thunderbird$|^net\.thunderbird\.Thunderbird$"#
+    open-on-workspace "Media"
+}
+
+window-rule {
+    // [Ss]: the Flatpak Steam declares StartupWMClass=Steam (capital S), the host RPM used steam
+    match app-id=r#"^[Ss]team$"#
+    match app-id=r#"^net.lutris.Lutris"#
+    match app-id=r#"^com\.usebottles\.bottles$|^io\.github\.benjamimgois\.goverlay$|^net\.davidotek\.pupgui2$"#
+    open-on-workspace "Games"
+}
+
+window-rule {
+    match app-id=r#"^org\.telegram\.desktop$"#
+    default-column-width { proportion 0.16667; }
+}
+
+window-rule {
+    match app-id=r#"^zellij$"#
+    default-column-width { proportion 1.0; }
+    open-on-workspace "General"
+}

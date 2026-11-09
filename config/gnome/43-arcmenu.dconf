@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MIT
+# ArcMenu: launcher icon in the panel, Super+Space runner at the top, no menu hotkey.
+# Load:   dconf load /org/gnome/shell/extensions/arcmenu/ < 43-arcmenu.dconf
+# Undo:   dconf reset -f /org/gnome/shell/extensions/arcmenu/
+[/]
+arcmenu-hotkey=@as []
+arcmenu-hotkey-overlay-key-enabled=true
+default-menu-view-runner='Default'
+hotkey-open-primary-monitor=false
+icon-size-apps=-1
+icon-size-buttons=-1
+icon-size-categories=-1
+icon-size-misc=-1
+icon-size-shortcuts=-1
+menu-button-appearance='Icon'
+menu-button-icon='resource:///org/gnome/shell/extensions/arcmenu/icons/scalable/actions/icon-app-launcher-symbolic.svg'
+multi-monitor=false
+runner-hotkey=['<Super>space']
+runner-hotkey-open-primary-monitor=false
+runner-hotkey-overlay-key-enabled=true
+runner-position='Top'
+runner-search-display-style='Grid'
+runner-searchbar-location='Top'
+runner-show-settings-button=false
+search-entry-border-radius=(true, 25)
+show-activities-button=true

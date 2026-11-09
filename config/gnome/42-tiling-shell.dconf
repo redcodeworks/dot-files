@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: MIT
+# Tiling Shell: layouts and shortcuts. The keys follow the owner's keyboard model (MEH = Ctrl+Shift+Alt, HYPR = MEH plus Super), the same one as niri/dotfiles.d/41-binds-meh-hyper.kdl.
+# Load:   dconf load /org/gnome/shell/extensions/tilingshell/ < 42-tiling-shell.dconf
+# Undo:   dconf reset -f /org/gnome/shell/extensions/tilingshell/
+[/]
+cycle-layouts=['<Shift><Control><Alt>braceright']
+cycle-layouts-backward=['<Shift><Shift><Control><Alt>braceright']
+edge-tiling-mode='default'
+enable-autotiling=false
+enable-tiling-system=true
+focus-window-down=['<Shift><Control><Alt>question']
+focus-window-left=['<Shift><Control><Alt>colon']
+focus-window-right=['<Shift><Control><Alt>quotedbl']
+focus-window-up=['<Shift><Control><Alt>braceleft']
+layouts-json='[{"id":"2644183","tiles":[{"x":0,"y":0,"width":0.5,"height":1,"groups":[1]},{"x":0.5,"y":0,"width":0.5000000000000018,"height":1,"groups":[1]}]},{"id":"Layout 1","tiles":[{"x":0,"y":0,"width":0.3333333333333333,"height":1,"groups":[2]},{"x":0.3333333333333333,"y":0,"width":0.3333333333333333,"height":1,"groups":[3,2]},{"x":0.6666666666666666,"y":0,"width":0.33333333333333337,"height":1,"groups":[3]}]},{"id":"Layout 3","tiles":[{"x":0,"y":0,"width":0.2682291666666667,"height":1,"groups":[1]},{"x":0.2682291666666667,"y":0,"width":0.7317708333333306,"height":1,"groups":[1]}]},{"id":"Layout 2","tiles":[{"x":0,"y":0,"width":0.7317708333333334,"height":1,"groups":[2]},{"x":0.7317708333333334,"y":0,"width":0.26822916666666663,"height":1,"groups":[2]}]},{"id":"Layout 4","tiles":[{"x":0,"y":0,"width":0.67,"height":1,"groups":[1]},{"x":0.67,"y":0,"width":0.33,"height":0.5,"groups":[2,1]},{"x":0.67,"y":0.5,"width":0.33,"height":0.5,"groups":[2,1]}]}]'
+move-window-center=['<Shift><Control><Alt><Super>c']
+move-window-down=['<Shift><Control><Alt><Super>question']
+move-window-left=['<Shift><Control><Alt><Super>colon']
+move-window-right=['<Shift><Control><Alt><Super>quotedbl']
+move-window-up=['<Shift><Control><Alt><Super>braceleft']
+selected-layouts=[['Layout 1'], ['Layout 3'], ['Layout 1'], ['Layout 1']]
+untile-window=['<Shift><Control><Alt><Super>u']
+window-use-custom-border-color=false

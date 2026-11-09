@@ -1,0 +1,83 @@
+# Plugins used here (install with `ya pkg add <repo:name>`): yazi-rs/plugins:git, :piper, :full-border, :smart-enter,
+# :mount; ndtoan96/ouch; boydaihungst/mediainfo. Flavor: matt-dong-123/gruvbox-material (see theme.toml).
+# Tools the previewers call: glow, ouch, mediainfo, jq, eza. A previewer whose tool is missing just shows nothing.
+
+[[plugin.prepend_fetchers]]
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url   = "*/"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_previewers]]
+url = "*.md"
+run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'
+
+[[plugin.prepend_previewers]]
+mime = "application/{*zip,tar,bzip2,7z*,rar,xz,zstd,java-archive}"
+run  = "ouch"
+
+# Thumbnail + metadata preview for audio/video/image/subtitles, using
+# ffmpeg + mediainfo (supersedes yazi's built-in magick/image/video previewers
+# for these types, since prepended entries are checked first).
+[[plugin.prepend_preloaders]]
+mime = "{audio,video,image}/*"
+run  = "mediainfo"
+
+[[plugin.prepend_preloaders]]
+mime = "application/subrip"
+run  = "mediainfo"
+
+[[plugin.prepend_previewers]]
+mime = "{audio,video,image}/*"
+run  = "mediainfo"
+
+[[plugin.prepend_previewers]]
+mime = "application/subrip"
+run  = "mediainfo"
+
+# JSON preview with jq (colourised).
+[[plugin.prepend_previewers]]
+url = "*.json"
+run = 'piper -- jq -C . "$1"'
+
+# Nicer directory preview using eza.
+[[plugin.prepend_previewers]]
+url = "*/"
+run = 'piper -- eza -TL=3 --color=always --icons=always --group-directories-first --no-quotes "$1"'
+
+[tasks]
+image_alloc = 1073741824
+
+[opener]
+image = [
+	{ run = 'flatpak run org.gnome.Loupe %s', desc = "Open with Image Viewer", orphan = true, for = "unix" },
+]
+pdf = [
+	{ run = 'flatpak run org.gnome.Papers %s', desc = "Open with Document Viewer", orphan = true, for = "unix" },
+]
+video = [
+	{ run = 'flatpak run io.mpv.Mpv %s', desc = "Open with mpv", orphan = true, for = "unix" },
+]
+audio = [
+	{ run = 'flatpak run io.mpv.Mpv %s', desc = "Open with mpv", orphan = true, for = "unix" },
+]
+markdown = [
+	{ run = 'flatpak run org.gnome.gitlab.somas.Apostrophe %s', desc = "Open with Apostrophe", orphan = true, for = "unix" },
+]
+office = [
+	{ run = 'flatpak run org.libreoffice.LibreOffice %s', desc = "Open with LibreOffice", orphan = true, for = "unix" },
+]
+
+[open]
+prepend_rules = [
+	{ url = "*.{md,markdown}", use = "markdown" },
+	{ mime = "image/*", use = "image" },
+	{ mime = "application/pdf", use = "pdf" },
+	{ mime = "video/*", use = "video" },
+	{ mime = "audio/*", use = "audio" },
+	{ mime = "application/{vnd.openxmlformats-officedocument.*,vnd.oasis.opendocument.*,msword,vnd.ms-excel,vnd.ms-powerpoint,rtf}", use = "office" },
+]

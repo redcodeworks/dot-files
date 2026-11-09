@@ -1,0 +1,20 @@
+// File explorer (yazi) on the left, editor (helix) on the right. Start with: zellij --layout dotfiles-yazelix
+layout {
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+    pane split_direction="vertical" {
+        pane size="20%" name="Explorer" {
+            command "fish"
+            args "-l" "-c" "exec yazi"
+        }
+        pane name="Editor" {
+            command "fish"
+            args "-l" "-c" "exec hx ."
+            focus true
+        }
+    }
+    pane size=2 borderless=true {
+        plugin location="zellij:status-bar"
+    }
+}

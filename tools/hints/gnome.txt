@@ -1,0 +1,1 @@
+Run `just gnome-apply` (add `--dry-run` to see the plan first): it backs up the current values, loads `gnome/*.dconf` (the path and an undo line are in each file's header) and enables the extensions that are installed. Install the extensions first (Extension Manager app), then run it again.

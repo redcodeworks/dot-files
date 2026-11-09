@@ -1,0 +1,25 @@
+# Gruvbox Material dark (medium). Bright black is #928374 for readable dim text
+# (4.0:1 contrast against the background). selection-background (#5a524c) and palette 0 (#45403d)
+# are medium bg5/bg3.
+background = #282828
+foreground = #D4BE98
+cursor-color = #D4BE98
+cursor-text = #282828
+selection-background = #5a524c
+selection-foreground = #D4BE98
+palette = 0=#45403d
+palette = 1=#EA6962
+palette = 2=#A9B665
+palette = 3=#D8A657
+palette = 4=#7DAEA3
+palette = 5=#D3869B
+palette = 6=#89B482
+palette = 7=#D4BE98
+palette = 8=#928374
+palette = 9=#EA6962
+palette = 10=#A9B665
+palette = 11=#D8A657
+palette = 12=#7DAEA3
+palette = 13=#D3869B
+palette = 14=#89B482
+palette = 15=#D4BE98

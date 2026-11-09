@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Parts of this file (values, comments, bind lines) follow niri's default-config.kdl, see NOTICE.
+// Layout, look and feel. Colours are Gruvbox Material. Reference:
+// https://yalter.github.io/niri/Configuration:-Layout
+
+layout {
+    gaps 16
+
+    center-focused-column "on-overflow"
+    always-center-single-column true
+
+    // Widths that switch-preset-column-width cycles through.
+    preset-column-widths {
+        proportion 0.25
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 0.75
+    }
+
+    default-column-width { proportion 0.33333; }
+
+    focus-ring {
+        width 4
+        active-gradient from="#a9b665" to="#7daea3" angle=135
+        inactive-color "#505050"
+    }
+
+    // The border stays off; the focus ring is used instead.
+    border {
+        off
+        width 4
+        active-color "#ffc87f"
+        inactive-color "#505050"
+        urgent-color "#9b0000"
+    }
+
+    shadow {
+        on
+        draw-behind-window true
+        softness 30
+        spread 5
+        offset x=0 y=5
+        color "#0007"
+    }
+
+    // Outer gaps on all sides.
+    struts {
+        left 32
+        right 32
+        top 32
+        bottom 32
+    }
+
+    tab-indicator {
+        width 8
+        gap 8
+        length total-proportion=1.0
+        position "left"
+        place-within-column
+        hide-when-single-tab
+    }
+
+    insert-hint {
+        color "#ffc87f80"
+        gradient from="#45858855" to="#98971a55" angle=45 in="oklch longer hue" relative-to="workspace-view"
+    }
+}
+
+// Do not show the "Important Hotkeys" pop-up at startup.
+hotkey-overlay {
+    skip-at-startup
+}
+
+// Screenshots go to ~/Pictures/Screenshots (strftime format).
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"

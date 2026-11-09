@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+# GNOME Shell's own shortcuts (a few of them).
+# Load:   dconf load /org/gnome/shell/keybindings/ < 31-shell-keybindings.dconf
+# Undo:   dconf reset -f /org/gnome/shell/keybindings/
+[/]
+focus-active-notification=['<Super>n']
+shift-overview-down=['<Super><Alt>Down']
+shift-overview-up=['<Super><Alt>Up']
+toggle-message-tray=@as []

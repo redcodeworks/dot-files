@@ -1,0 +1,27 @@
+// SPDX-License-Identifier: MIT
+// Session environment and cursor for niri on a GNOME-flavoured Fedora Atomic desktop.
+
+environment {
+    // Qt apps use Qt's built-in GTK3 platform theme (no plasma-integration, qt6ct or Kvantum needed).
+    QT_QPA_PLATFORMTHEME "gtk3"
+    // Needs a GTK theme of this name to be installed.
+    // GTK_THEME "Gruvbox-Dark"
+
+    // Route SSH key passphrase prompts to GNOME's askpass. Off by default: "prefer" makes ssh use the
+    // askpass program even in a terminal, and the path below is the Fedora one (check it exists first).
+    // SSH_ASKPASS "/usr/libexec/openssh/gnome-ssh-askpass"
+    // SSH_ASKPASS_REQUIRE "prefer"
+
+    // DISPLAY is deliberately not set here: niri's built-in xwayland-satellite integration assigns it and
+    // exports it to spawned clients. Hardcoding ":0" breaks X11 apps whenever the number differs.
+
+    // Keep Proton from enabling HDR on its own.
+    PROTON_ENABLE_HDR "0"
+}
+
+// Same cursor as GNOME (Adwaita, 24). niri exports this to Wayland clients itself, which is more
+// reliable than XCURSOR_THEME.
+cursor {
+    xcursor-theme "Adwaita"
+    xcursor-size 24
+}

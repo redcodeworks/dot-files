@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+// App and folder launchers on Super+Alt (plain Mod/Super is used for navigation in 40/41, and Super+Alt
+// does not collide with either). Optional: every bind needs the program it starts.
+// Terminal apps run in ghostty. The folder binds run yazi through a fish function `y` that wraps it, so
+// quitting yazi drops you into fish in the folder you ended up in (instead of closing the window); the
+// wrapper is the one from yazi's own documentation. `~` is expanded by fish. Delete the lines for programs you do not use.
+
+// The ~/Games, ~/Projects and ~/Public targets below assume one home-directory layout; edit them to your folders.
+binds {
+    Super+Alt+Shift+W hotkey-overlay-title="Open Default Browser: Firefox" { spawn "flatpak" "run" "org.mozilla.firefox"; }
+
+    Super+Alt+H hotkey-overlay-title="Open Yazi: Home" { spawn "ghostty" "-e" "fish" "-C" "y ~"; }
+    Super+Alt+Shift+D hotkey-overlay-title="Open Yazi: Documents" { spawn "ghostty" "-e" "fish" "-C" "y ~/Documents"; }
+    Super+Alt+J hotkey-overlay-title="Open Yazi: Downloads" { spawn "ghostty" "-e" "fish" "-C" "y ~/Downloads"; }
+    Super+Alt+P hotkey-overlay-title="Open Yazi: Pictures" { spawn "ghostty" "-e" "fish" "-C" "y ~/Pictures"; }
+    Super+Alt+M hotkey-overlay-title="Open Yazi: Music" { spawn "ghostty" "-e" "fish" "-C" "y ~/Music"; }
+    Super+Alt+V hotkey-overlay-title="Open Yazi: Videos" { spawn "ghostty" "-e" "fish" "-C" "y ~/Videos"; }
+    Super+Alt+G hotkey-overlay-title="Open Yazi: Games" { spawn "ghostty" "-e" "fish" "-C" "y ~/Games"; }
+    Super+Alt+Shift+R hotkey-overlay-title="Open Yazi: Projects" { spawn "ghostty" "-e" "fish" "-C" "y ~/Projects"; }
+    Super+Alt+T hotkey-overlay-title="Open Yazi: Templates" { spawn "ghostty" "-e" "fish" "-C" "y ~/Templates"; }
+    Super+Alt+U hotkey-overlay-title="Open Yazi: Public" { spawn "ghostty" "-e" "fish" "-C" "y ~/Public"; }
+    Super+Alt+Comma hotkey-overlay-title="Open Yazi: .config" { spawn "ghostty" "-e" "fish" "-C" "y ~/.config"; }
+
+    Super+Alt+Shift+E hotkey-overlay-title="Open Editor: Helix" { spawn "ghostty" "-e" "hx"; }
+
+    Super+Alt+Period hotkey-overlay-title="Open System Monitor: btop" { spawn "ghostty" "-e" "btop"; }
+
+    Super+Alt+Z hotkey-overlay-title="Open Terminal Multiplexer: zellij" { spawn "ghostty" "-e" "zellij"; }
+
+    // TUI calculator: math functions (sqrt, sin, pi ...) available without a "math." prefix.
+    Super+Alt+C hotkey-overlay-title="Open Calculator: ipython" { spawn "ghostty" "-e" "ipython" "-i" "-c" "from math import *"; }
+
+    Super+Alt+N hotkey-overlay-title="Open GPU Monitor: nvtop" { spawn "ghostty" "-e" "nvtop"; }
+    // lnav has no journald mode of its own, so pipe journalctl in.
+    Super+Alt+O hotkey-overlay-title="Open Log Navigator: lnav" { spawn "ghostty" "-e" "sh" "-c" "journalctl -b | lnav"; }
+    // lazydocker defaults to Docker's socket; podman's socket is Docker-API-compatible.
+    Super+Alt+K hotkey-overlay-title="Open Container Manager: lazydocker" { spawn "ghostty" "-e" "sh" "-c" "DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock exec lazydocker"; }
+    Super+Alt+Shift+S hotkey-overlay-title="Open Disk Usage: gdu" { spawn "ghostty" "-e" "gdu-go"; }
+}

@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: MIT
+# Appearance keys: dark scheme, no hot corner, subpixel text, a Nerd Font for monospace.
+# Load:   dconf load /org/gnome/desktop/interface/ < 20-interface.dconf
+# Undo:   dconf reset -f /org/gnome/desktop/interface/   (resets ALL interface keys, not only these)
+# gtk-theme and icon-theme need those themes to be installed (Gruvbox-Dark GTK theme, Papirus icons);
+# monospace-font-name needs the AdwaitaMono Nerd Font. Delete the lines for things you do not have.
+[/]
+color-scheme='prefer-dark'
+enable-animations=true
+enable-hot-corners=false
+font-antialiasing='rgba'
+font-hinting='full'
+gtk-theme='Gruvbox-Dark'
+icon-theme='Papirus'
+monospace-font-name='AdwaitaMono Nerd Font 11'
+text-scaling-factor=1.0
+toolkit-accessibility=false

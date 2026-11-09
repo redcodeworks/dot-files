@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+# Example Noctalia config. Noctalia has one config file (~/.config/noctalia/config.toml) and no drop-in
+# directory that this repo could rely on, so this ships as an EXAMPLE: merge the sections you want into
+# your own config.toml. The Settings UI writes its own state elsewhere (~/.local/state/noctalia/).
+
+# Noctalia's built-in polkit authentication agent is OFF by default. niri has no agent of its own and
+# gnome-shell's only runs inside GNOME, so without this nothing in a niri session can show an admin-auth
+# prompt (polkitd answers "challenge, no agent"). Needs a Noctalia restart. Do not run another agent
+# (mate-polkit, polkit-gnome, ...) alongside it.
+[shell]
+polkit_agent = true
+
+# Noctalia themes ITSELF only: its templates must not regenerate other apps' configs (niri, Qt, starship,
+# bat, fzf ...), which would rewrite files you keep under version control. Re-enable per app in the
+# Settings UI if you want that.
+[theme.templates]
+builtin_ids = []
+community_ids = []
+enable_community_templates = false
+
+# Idle behaviours: lock after 45 minutes, suspend after 2 hours. The lock behaviour fires first, so the
+# screen is already locked when the suspend one fires.
+[idle]
+behavior_order = ["lock", "suspend"]
+
+[idle.behavior.lock]
+action = "lock"
+timeout = 2700
+
+[idle.behavior.suspend]
+action = "suspend"
+timeout = 7200

@@ -1,0 +1,88 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Parts of this file (values, comments, bind lines) follow niri's default-config.kdl, see NOTICE.
+// Generic window rules. Reference: https://yalter.github.io/niri/Configuration:-Window-Rules
+// Find an app's id with `niri msg windows`.
+
+window-rule {
+    default-column-width { proportion 0.33333; }
+    exclude app-id=r#"org.mozilla.firefox|org.mozilla.thunderbird"#
+}
+
+// Inactive terminal windows only: opacity and blur do not render on the active window on AMD + niri
+// (tested tiled and floating). Inactive windows use a different render path.
+window-rule {
+    match app-id=r#"^(Alacritty|com\.mitchellh\.ghostty)$"# is-active=false
+    opacity 0.85
+    background-effect {
+        blur true
+    }
+}
+
+// WezTerm needs an empty default-column-width because of its initial configure bug.
+window-rule {
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    default-column-width {}
+}
+
+// Firefox picture-in-picture floats (host app-id "firefox", Flatpak "org.mozilla.firefox").
+// niri has no always-on-top; the floating layer already renders above the tiled one.
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+// Heuristic catch-all for dialogs by title. niri already floats any window whose min size equals its max
+// size, which covers most real dialogs; this is for those that do not set that hint.
+window-rule {
+    match title=r#"^(Open|Save|Save As|Save File|Choose|Select|Preferences|Settings|Properties|About|Confirm|Warning|Error)( .*)?$"#
+    open-floating true
+}
+
+// Keep the launcher out of screen capture (add your own sensitive apps here, for example a password manager).
+// Use "screencast" instead of "screen-capture" to leave it visible to third-party screenshot tools.
+window-rule {
+    match app-id=r#"^fuzzel$"#
+    block-out-from "screen-capture"
+}
+
+window-rule {
+    match app-id="^steam$" title=r#"^notificationtoasts_\d+_desktop$"#
+    default-floating-position x=10 y=10 relative-to="top"
+}
+
+// Steam games (steam_app_<id>) and Windows .exe titles: fullscreen with variable refresh rate, on "Games".
+window-rule {
+    match app-id=r#"steam_app_\d+"#
+    match app-id=r#"\.exe$"#
+    exclude title=r#"^Launcher$|^Security$"#
+    open-fullscreen true
+    variable-refresh-rate true
+    open-on-workspace "Games"
+}
+
+// gamescope is a nested compositor: niri only sees its outer window. It deliberately gets NO
+// open-on-workspace, so it opens wherever you already are (this also avoids fighting a streaming host
+// that switches workspaces itself).
+window-rule {
+    match app-id=r#"^gamescope$"#
+    exclude title=r#"^Launcher$|^Security$"#
+    open-fullscreen true
+    variable-refresh-rate true
+}
+
+// Game launchers and first-run windows float.
+window-rule {
+    match app-id=r#"steam_app_\d+"# title=r#"^Launcher$|^Security$"#
+    match app-id=r#"^jetbrains-"# title=r#"^Welcome to"#
+    open-floating true
+}
+
+// Small utility windows float in the top right corner.
+window-rule {
+    match app-id=r#"^org\.pulseaudio\.pavucontrol$|^blueman-manager$|^nm-connection-editor$|^org\.gnome\.SystemMonitor$"#
+    match app-id=r#"virt-manager"# title=r#"^Virtual Machine Manager$"#
+    match app-id=r#"^jetbrains-toolbox$"#
+    default-column-width { proportion 0.16667; }
+    open-floating true
+    default-floating-position x=50 y=25 relative-to="top-right"
+}

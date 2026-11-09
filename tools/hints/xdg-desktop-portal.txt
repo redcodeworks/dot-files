@@ -1,0 +1,1 @@
+Example only: copy `xdg-desktop-portal/niri-portals.example.conf` to the real name (`~/.config/xdg-desktop-portal/niri-portals.conf`) and edit.

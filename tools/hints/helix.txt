@@ -1,0 +1,1 @@
+The files (`config.toml`, `languages.toml`, `rg-fzf.sh`, `tmpdir.sh`) are main files: with `preserve` yours are kept, so merge by hand. The theme line is commented out.

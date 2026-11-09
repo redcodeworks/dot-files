@@ -1,0 +1,1 @@
+Example only: copy `noctalia/config.example.toml` to the real name (`~/.config/noctalia/config.toml`) and edit.

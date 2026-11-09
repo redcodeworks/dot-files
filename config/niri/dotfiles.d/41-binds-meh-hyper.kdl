@@ -1,0 +1,94 @@
+// SPDX-License-Identifier: MIT
+// Binds for a "Meh/Hyper" keyboard layer (a key that sends Ctrl+Shift+Alt, and one that adds Super on top).
+// Meh = focus, Meh+Mod = move, mirroring Mod / Mod+Shift in 40-binds-navigation.kdl. The keys ; / [ '
+// act as the arrow cluster. If you have no such layer, leave this file out.
+
+binds {
+    Mod+Delete repeat=false { close-window; }
+    Mod+Backspace repeat=false { close-window; }
+
+    Ctrl+Shift+Alt+Semicolon     { focus-column-left; }
+    Ctrl+Shift+Alt+Slash         { focus-window-down; }
+    Ctrl+Shift+Alt+BracketLeft   { focus-window-up; }
+    Ctrl+Shift+Alt+Apostrophe    { focus-column-right; }
+
+    Ctrl+Shift+Alt+Mod+Semicolon   { move-column-left; }
+    Ctrl+Shift+Alt+Mod+Slash       { move-window-down; }
+    Ctrl+Shift+Alt+Mod+BracketLeft { move-window-up; }
+    Ctrl+Shift+Alt+Mod+Apostrophe  { move-column-right; }
+    Ctrl+Shift+Alt+Mod+BracketRight repeat=false { toggle-overview; }
+
+    Ctrl+Shift+Alt+K { focus-column-first; }
+    Ctrl+Shift+Alt+Comma  { focus-column-last; }
+
+    Ctrl+Shift+Alt+Mod+K { move-column-to-first; }
+    Ctrl+Shift+Alt+Mod+Comma { move-column-to-last; }
+
+    Ctrl+Shift+Alt+Period      { focus-workspace-down; }
+    Ctrl+Shift+Alt+L           { focus-workspace-up; }
+    Ctrl+Shift+Alt+Mod+Period  { move-column-to-workspace-down; }
+    Ctrl+Shift+Alt+Mod+L       { move-column-to-workspace-up; }
+
+    Mod+WheelScrollDown       cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp         cooldown-ms=150 { focus-workspace-up; }
+    Mod+Shift+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Shift+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
+    Mod+WheelScrollRight       { focus-column-right; }
+    Mod+WheelScrollLeft        { focus-column-left; }
+    Mod+Shift+WheelScrollRight { move-column-right; }
+    Mod+Shift+WheelScrollLeft  { move-column-left; }
+
+    // niri refers to workspaces by index ("best effort": an index past the last one means the bottom, empty one).
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+
+    // The same for the four named workspaces (see 20-workspaces.kdl).
+    Ctrl+Shift+Alt+1 { focus-workspace 1; }
+    Ctrl+Shift+Alt+2 { focus-workspace 2; }
+    Ctrl+Shift+Alt+3 { focus-workspace 3; }
+    Ctrl+Shift+Alt+4 { focus-workspace 4; }
+    Ctrl+Shift+Alt+Mod+1 { move-column-to-workspace 1; }
+    Ctrl+Shift+Alt+Mod+2 { move-column-to-workspace 2; }
+    Ctrl+Shift+Alt+Mod+3 { move-column-to-workspace 3; }
+    Ctrl+Shift+Alt+Mod+4 { move-column-to-workspace 4; }
+
+    Ctrl+Shift+Alt+N { consume-or-expel-window-left; }
+    Ctrl+Shift+Alt+M { consume-or-expel-window-right; }
+    Ctrl+Shift+Alt+Mod+N { consume-window-into-column; }
+    Ctrl+Shift+Alt+Mod+M { expel-window-from-column; }
+
+    Ctrl+Shift+Alt+R { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Ctrl+Shift+Alt+F { maximize-column; }
+    Ctrl+Shift+Alt+Mod+F { fullscreen-window; }
+
+    Ctrl+Shift+Alt+C { center-column; }
+    Ctrl+Shift+Alt+Mod+C { center-visible-columns; }
+
+    Ctrl+Shift+Alt+Minus { set-column-width "-10%"; }
+    Ctrl+Shift+Alt+Equal { set-column-width "+10%"; }
+    Ctrl+Shift+Alt+Mod+Minus { set-window-height "-10%"; }
+    Ctrl+Shift+Alt+Mod+Equal { set-window-height "+10%"; }
+
+    Mod+Shift+Backslash { toggle-window-floating; }
+    Mod+Backslash { switch-focus-between-floating-and-tiling; }
+
+    Mod+T { toggle-column-tabbed-display; }
+}

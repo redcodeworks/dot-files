@@ -1,0 +1,21 @@
+# Login shell is bash; terminals can launch brew's fish explicitly. Uncomment and adjust the path
+# (leave it commented to use your login shell):
+# command = /home/linuxbrew/.linuxbrew/bin/fish
+
+# Keep a zoomed split zoomed while moving between splits (goto_split), new in 1.3
+split-preserve-zoom = navigation
+
+# Dim unfocused splits a bit less than the default 0.7 (1 turns dimming off)
+unfocused-split-opacity = 0.8
+
+# SSH: ssh-env falls back to TERM=xterm-256color on remotes, ssh-terminfo installs Ghostty's
+# terminfo on hosts that lack it (needs infocmp here and tic there). Defaults kept: cursor, title and path on, sudo off.
+shell-integration-features = ssh-env,ssh-terminfo
+
+linux-cgroup = single-instance
+
+# Notify (bell + desktop notification) when a command that ran 30 s or longer finishes while this
+# window is not focused. Needs shell integration (fish 4 marks prompts itself).
+notify-on-command-finish = unfocused
+notify-on-command-finish-after = 30s
+notify-on-command-finish-action = bell,notify

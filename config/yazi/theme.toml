@@ -1,0 +1,35 @@
+[flavor]
+dark = "gruvbox-material"
+
+# Colour overrides on top of the flavor (Gruvbox Material MEDIUM). The flavor (flavors/gruvbox-material.yazi,
+# installed with `ya pkg add matt-dong-123/gruvbox-material`) is left untouched so `ya pkg` stays consistent; gaps found against
+# yazi 26.9.1's built-in theme are filled here. Colours only.
+
+# Flavor uses #ddc7a1 (off-palette, hard-variant fg) here
+[status]
+progress_label = { fg = "#d4be98", bold = true }
+
+# Sections the flavor lacks (they would fall back to ANSI blue/default)
+[which]
+border = { fg = "#7daea3" }
+
+[confirm]
+border = { fg = "#7daea3" }
+title  = { fg = "#7daea3" }
+body   = { fg = "#d4be98" }
+list   = { fg = "#d4be98" }
+
+# yazi 26.x renamed [help] on/run/footer to chord/action (footer removed)
+[help]
+border = { fg = "#7daea3" }
+chord  = { fg = "#89b482" }
+action = { fg = "#d3869b" }
+
+# Special-file rules the flavor dropped (built-in defaults: exec green, orphan/dummy red background)
+[filetype]
+prepend_rules = [
+	{ url = "*", is = "orphan", fg = "#282828", bg = "#ea6962" },
+	{ url = "*", is = "dummy", fg = "#282828", bg = "#ea6962" },
+	{ url = "*/", is = "dummy", fg = "#282828", bg = "#ea6962" },
+	{ url = "*", is = "exec", fg = "#a9b665" },
+]

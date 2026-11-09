@@ -1,0 +1,14 @@
+[[mgr.prepend_keymap]]
+on   = "<Enter>"
+run  = "plugin smart-enter"
+desc = "Enter the child directory, or open the file"
+
+[[mgr.prepend_keymap]]
+on  = "M"
+run = "plugin mount"
+desc = "Mount, unmount, or eject a disk"
+
+[[mgr.prepend_keymap]]
+on  = "C"
+run = "plugin ouch"
+desc = "Compress with ouch"

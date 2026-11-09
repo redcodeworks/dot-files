@@ -1,0 +1,17 @@
+# Gruvbox Material; follows the system light/dark setting. Theme files live in ../themes.
+theme = dark:dotfiles-gruvbox-material-dark,light:dotfiles-gruvbox-material-light
+
+background-opacity = 1
+background-blur = false
+
+# Ligatures (calt/liga) are on by default for fonts that have them; listed explicitly so it's
+# clear they are intentional. Needs the JetBrains Mono Nerd Font installed.
+font-family = "JetBrainsMono Nerd Font"
+font-style = Medium
+font-size = 10
+font-feature = +calt
+font-feature = +liga
+
+window-padding-x = 25
+window-padding-y = 25
+window-padding-balance = true

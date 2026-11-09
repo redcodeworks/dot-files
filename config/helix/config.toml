@@ -1,0 +1,51 @@
+# The author's theme "gruvbox-material" is a custom file in ~/.config/helix/themes (not shipped
+# here). Uncomment after adding it, or pick any built-in theme, e.g. "gruvbox".
+# theme = "gruvbox-material"
+
+[editor]
+line-number = "relative"
+mouse = true
+end-of-line-diagnostics = "hint"
+bufferline = "multiple"
+rulers = [100]
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+[editor.lsp]
+display-inlay-hints = true
+display-messages = true
+
+[editor.inline-diagnostics]
+cursor-line = "error"
+
+[editor.soft-wrap]
+enable = true
+
+[editor.indent-guides]
+render = true
+
+# C-y: yazi file chooser, C-g: lazygit, C-f: ripgrep + fzf search (needs yazi, lazygit, rg, fzf, bat on PATH).
+# Results go through a private per-user directory printed by tmpdir.sh, not a fixed name in /tmp.
+[keys.normal]
+C-y = [
+  ':sh rm -f "$(~/.config/helix/tmpdir.sh)/yazi-pick"',
+  ':insert-output yazi --chooser-file="$(~/.config/helix/tmpdir.sh)/yazi-pick"',
+  ':sh printf "\x1b[?1049h\x1b[?2004h" > /dev/tty',
+  ':open %sh{cat "$(~/.config/helix/tmpdir.sh)/yazi-pick"}',
+  ':redraw',
+]
+
+"C-g" = [":new", ":insert-output lazygit", ":buffer-close!", ":redraw"]
+"C-f" = [
+  ':sh rm -f "$(~/.config/helix/tmpdir.sh)/rg-result"',
+  ':insert-output ~/.config/helix/rg-fzf.sh',
+  ':sh printf "\x1b[?1049h\x1b[?2004h" > /dev/tty',
+  ':open %sh{cat "$(~/.config/helix/tmpdir.sh)/rg-result" 2>/dev/null}',
+  ':redraw',
+]

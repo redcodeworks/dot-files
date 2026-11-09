@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: MIT
+# Dash to Dock appearance and behaviour: bottom dock, intellihide, 32 px icons, running dots in the accent colour.
+# Load:   dconf load /org/gnome/shell/extensions/dash-to-dock/ < 40-dash-to-dock.dconf
+# Undo:   dconf reset -f /org/gnome/shell/extensions/dash-to-dock/
+[/]
+always-center-icons=true
+animation-time=0.20000000000000001
+apply-custom-theme=false
+background-opacity=0.80000000000000004
+click-action='focus-or-appspread'
+custom-background-color=false
+custom-theme-customize-running-dots=true
+custom-theme-running-dots-border-color='rgb(255,255,255)'
+custom-theme-running-dots-border-width=0
+custom-theme-running-dots-color='rgb(125,174,163)'
+custom-theme-shrink=false
+dash-max-icon-size=32
+dock-fixed=false
+dock-position='BOTTOM'
+extend-height=false
+height-fraction=0.90000000000000002
+hide-delay=0.20000000000000001
+intellihide-mode='FOCUS_APPLICATION_WINDOWS'
+middle-click-action='launch'
+preview-size-scale=0.0
+running-indicator-dominant-color=false
+running-indicator-style='DASHES'
+scroll-action='cycle-windows'
+shift-click-action='minimize'
+shift-middle-click-action='launch'
+show-icons-notifications-counter=false
+show-mounts-network=true
+transparency-mode='DEFAULT'
