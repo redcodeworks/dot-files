@@ -73,7 +73,7 @@ fish and environment.d files, which are read automatically.
 - niri Noctalia fragment (off by default): starts Noctalia, sets a global corner radius, blur on every window, and turns on
   the niri debug flag `honor-xdg-activation-with-invalid-serial`, which weakens focus-steal protection.
 - ghostty: the `ssh-terminfo` feature copies Ghostty's terminfo to hosts you ssh into.
-- The GNOME `10-app-folders.dconf` replaces your app-grid folder list; the others set the keys named in their headers.
+- The GNOME `10-app-folders.dconf` replaces your app-grid folder list; `41-auto-move-windows.dconf` replaces the list of which app opens on which workspace (it holds the owner's app ids, edit it first); the others set the keys named in their headers (Auto Move Windows, Tiling Shell and ArcMenu have a file each).
 
 Third-party material is in `NOTICE`. The root `LICENSE` (MIT) covers everything unless a file's SPDX header or `NOTICE` says otherwise.
 

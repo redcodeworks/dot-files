@@ -250,6 +250,14 @@ cp "$G/bin/dconf" "$G/nobin/dconf"; r=$(PATH="$G/nobin" DOT_SRC="$G/src" DOT_STA
 echo "$r" | grep -q 'gsettings not found' && chk ok "clear error when gsettings is missing" || chk fail "missing gsettings: $r"
 eq "$(awk '/^uuids=\(/{on=1;next} on&&/^\)/{exit} on{print $1}' config/gnome/30-enable-extensions.sh | wc -l | tr -d ' ')" 13 "the shipped extension list has 13 entries"
 eq "$(awk '/^uuids=\(/{on=1;next} on&&/^\)/{exit} on&&!/# .*; (from extensions.gnome.org|ships with the image)/{print}' config/gnome/30-enable-extensions.sh | wc -l | tr -d ' ')" 0 "every extension entry says what it is and where it comes from"
+# the real config/gnome files: all of them are loaded and backed up
+R="$T/real"; mkdir -p "$R/data" "$R/state"; : > "$R/data/installed"
+PATH="$G/bin:$PATH" STUBDATA="$R/data" DOT_SRC="$root/config" DOT_STATE="$R/state" $D gnome-apply >/dev/null 2>&1; eq "$?" 0 "gnome-apply runs on the real config/gnome files"
+nd=$(find config/gnome -name '*.dconf' | wc -l | tr -d ' '); eq "$nd" 8 "config/gnome has 8 dconf files"
+eq "$(wc -l < "$R/data/dconf.log" | tr -d ' ')" "$nd" "every real dconf file is loaded"
+eq "$(find "$R/state/backup" -name 'dconf-*.ini' | wc -l | tr -d ' ')" "$nd" "every real dconf file is backed up first"
+for n in auto-move-windows tilingshell arcmenu; do grep -q "load /org/gnome/shell/extensions/$n/" "$R/data/dconf.log" && chk ok "$n is loaded" || chk fail "$n is not loaded"; done
+[ ! -e config/gnome/32-forge-keybindings.dconf ] && chk ok "the forge file is gone" || chk fail "forge file still present"
 unset D
 
 echo "=== this repo"
