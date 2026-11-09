@@ -197,6 +197,19 @@ eq "$($D describe kitty | wc -l | tr -d ' ')" 1 "describe <app> prints one line"
 err=$($D describe nope 2>&1 >/dev/null); rc=$?; [ "$rc" -ne 0 ] && echo "$err" | grep -q 'unknown app: nope (known apps:' && chk ok "describe: unknown app is an error" || chk fail "describe unknown app"
 eq "$(just describe fish | cut -f1)" fish "just describe"
 
+# fzf colors follow the terminal palette
+F=config/fish/conf.d/60-dotfiles-fzf-colors.fish
+grep -qE '#[0-9a-fA-F]{3,6}' <(grep -v '^#' "$F") && chk fail "fzf colors file has a hex color" || chk ok "fzf colors file has no hex colors"
+eq "$(grep 'set -l fzf_theme_opts' "$F" | grep -o -- '--color=[^"]*' | tr ',' '\n' | sed 's/^--color=//' | grep ':' | sed 's/^[a-z+-]*://; s/:.*//' | grep -vcE '^(-1|[0-9]|1[0-5])$')" 0 "fzf colors use only ANSI numbers 0-15 and -1"
+if command -v fish >/dev/null 2>&1; then
+    fz() { FZF_DEFAULT_OPTS="$1" fish --no-config -i -c 'source '"$root/$F"'; source '"$root/$F"'; printf "%s" "$FZF_DEFAULT_OPTS"' 2>/dev/null; }
+    a=$(fz ""); eq "$(echo "$a" | grep -c -- '--color=16,bg:-1')" 1 "fzf colors: set once after two sourcings"
+    eq "$(fz "$a")" "$a" "fzf colors: idempotent when the value is already set"
+    eq "$(fz "--height=40%")" "$(printf -- '--height=40%%\n%s' "$a")" "fzf colors: your own options stay in front"
+    old=$(printf -- '--height=40%%\n--color=bg+:#32302f\n--color=bg:#282828\n--color=label:#d4be98')
+    eq "$(fz "$old")" "$(printf -- '--height=40%%\n%s' "$a")" "fzf colors: the old hex options are replaced, not appended to"
+else echo "  skip fzf color tests (fish not installed)"; fi
+
 # brew
 $D brew --dry-run | grep -q '^would run: brew bundle --file=.*/Brewfile$' && chk ok "brew --dry-run prints the command" || chk fail "brew --dry-run"
 eq "$($D brew --dry-run | sed -n 's/^  //p' | wc -l | tr -d ' ')" "$(grep -c '^brew "' Brewfile)" "brew --dry-run lists every formula"
