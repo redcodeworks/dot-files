@@ -21,6 +21,10 @@ diff *apps:
 list:
     @tools/dotctl.sh list
 
+# One line per app, in the order of `just list`: app, a tab, a short description (optionally name one app)
+describe *apps:
+    @tools/dotctl.sh describe {{apps}}
+
 # Print the manual step each app needs after install (tools/hints/<app>.txt); no app names = all apps
 hint *apps:
     @tools/dotctl.sh hint {{apps}}

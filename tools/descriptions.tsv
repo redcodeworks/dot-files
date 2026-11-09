@@ -1,0 +1,16 @@
+btop	Resource monitor: a Gruvbox Material dark color theme
+environment.d	Session variables: adds Homebrew's bin folder to PATH at login
+eza	Modern ls replacement: a Gruvbox Material color theme
+fastfetch	System info greeting: a compact layout with a Fedora-style logo
+fish	Friendly shell: short aliases, helpers, fzf colors, a fastfetch greeting
+gamemode	Game performance daemon: an example config to copy and edit
+ghostty	Terminal emulator: Gruvbox Material themes and tuned settings as drop-ins
+gnome	GNOME desktop: dconf settings for the dock, shortcuts, theme and extensions
+helix	Modal text editor: keybindings, language setup and file-picker helpers
+kitty	Terminal emulator: Gruvbox Material colors and settings as drop-ins
+lazygit	Git terminal UI: a Gruvbox Material color theme
+niri	Scrollable-tiling Wayland compositor: layout, keybindings, window rules
+noctalia	Desktop shell for niri: an example config to copy and edit
+xdg-desktop-portal	Desktop portals: an example niri portal config to copy and edit
+yazi	Terminal file manager: keymap, previewers and a Gruvbox Material theme
+zellij	Terminal multiplexer: Gruvbox Material theme and a yazi plus helix layout

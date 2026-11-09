@@ -37,6 +37,7 @@ These recipe names and their output are stable, so another script (for example a
 | `just status [app ...]` | per file: new, same, update or modified |
 | `just diff [app ...]` | diffs for everything that differs |
 | `just list` | apps and files this repo manages |
+| `just describe [app]` | one line per app, `<app>`, a tab, a short description (the same order as `just list`); handy for building an app chooser |
 | `just hint [app ...]` | print the manual step an app needs after install (the table below, from `tools/hints/<app>.txt`); no names means all apps; an app without a step prints `nothing to do`; an unknown app is an error naming the known ones |
 | `just brew [--dry-run]` | `brew bundle` on the repo's `Brewfile` (command-line tools the configs use, formulae only); `--dry-run` only lists the formulae and the command; needs Homebrew, no sudo |
 | `just gnome-apply [--dry-run]` | for each `config/gnome/*.dconf`: back up the current values of its path to `~/.local/state/dot-files/backup/<timestamp>/dconf-<name>.ini`, then `dconf load` it, printing what it changes, the path and the undo line; then enable the GNOME Shell extensions that are installed and list the missing ones with where each comes from (the image, or extensions.gnome.org via the Extension Manager app; nothing is installed for you). Refuses to run as root; needs `dconf` and `gsettings`; safe to run again |
@@ -65,7 +66,7 @@ fish and environment.d files, which are read automatically.
 
 - fish (interactive shells only): `cp` and `mv` ask before overwriting (`-i`); `diff` and `ip` use colour; new short
   names `..`, `...`, `lt`, `fp`, `ipy`; `y` runs yazi and changes into the folder you quit in; a fastfetch
-  greeting; `EZA_ICONS_AUTO=1`; fzf colours through `FZF_DEFAULT_OPTS` (your own value is kept in front);
+  greeting; `EZA_ICONS_AUTO=1`; fzf colors through `FZF_DEFAULT_OPTS` that follow your terminal's palette (your own value is kept in front);
   `~/.local/bin` is added to `PATH`; `EDITOR` and `SUDO_EDITOR` point to helix when it is installed; the brew and rustup
   environments are loaded if present.
 - environment.d adds Homebrew's `bin` at the end of `PATH` for your session.

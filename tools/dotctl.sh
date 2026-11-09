@@ -5,6 +5,7 @@
 #   dotctl.sh status [app ...]                                new / same / update / modified, per file
 #   dotctl.sh diff [app ...]                                  unified diffs for files that differ
 #   dotctl.sh list                                            managed apps and files
+#   dotctl.sh describe [app]                                  one line per app: <app><TAB><description> (tools/descriptions.tsv)
 #   dotctl.sh hint [app ...]                                  the manual step an app needs after install (tools/hints/<app>.txt)
 #   dotctl.sh brew [--dry-run]                                brew bundle --file=<repo>/Brewfile (command-line tools the configs use)
 #   dotctl.sh gnome-apply [--dry-run]                         back up, then load config/gnome/*.dconf; enable installed extensions
@@ -127,6 +128,21 @@ case "$cmd" in
             esac
         done < <(files)
         echo "$([ "$dry" -eq 1 ] && echo 'dry run: ')$copied new, $replaced replaced, $kept kept, $same already identical" ;;
+
+    describe)
+        desc="${DOT_DESCRIPTIONS:-$root/tools/descriptions.tsv}"
+        [ -f "$desc" ] || { echo "no descriptions file at $desc" >&2; exit 1; }
+        apps_all=$(apps=(); files | awk -F/ '{c[$1]++} END {for (a in c) printf "%-16s %d file(s)\n", a, c[a]}' | LC_ALL=C sort | awk '{print $1}')
+        if [ "${#apps[@]}" -gt 0 ]; then
+            [ "${#apps[@]}" -eq 1 ] || { echo "describe takes at most one app" >&2; exit 2; }
+            printf '%s\n' "$apps_all" | grep -Fxq -- "${apps[0]}" || { echo "unknown app: ${apps[0]} (known apps: $(printf '%s' "$apps_all" | tr '\n' ' ' | sed 's/ $//'))" >&2; exit 1; }
+            apps_all="${apps[0]}"
+        fi
+        while IFS= read -r app; do
+            [ -n "$app" ] || continue
+            line=$(awk -F'\t' -v a="$app" '$1 == a {print $2; exit}' "$desc")
+            printf '%s\t%s\n' "$app" "$line"
+        done <<< "$apps_all" ;;
 
     hint)
         hints="${DOT_HINTS:-$root/tools/hints}"
