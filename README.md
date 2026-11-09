@@ -3,15 +3,11 @@
 My desktop configuration (Fedora Atomic, GNOME and niri, a terminal-centred workflow), reduced to the parts that are
 useful for reproducing the setup. A `just` recipe copies them into `~/.config`; nothing personal is in here.
 
-This is a personal project for my own machine, so please excuse the slop. It was written with Claude (Anthropic's coding
-assistant) and I have only tested it on my own setup. More serious maintainers are welcome to take anything that looks
-useful, no need to ask.
-
 ## Requirements
 
-[`just`](https://github.com/casey/just) and bash. Nothing else is needed to install.
+[`just`](https://github.com/casey/just) and bash. Nothing else is needed to install. The tools the configs call (helix, yazi, zellij, ...) come from `just brew`; GNOME extensions are installed separately.
 
-## Use
+## Install and usage
 
 ```
 git clone https://github.com/redcodeworks/dot-files && cd dot-files
@@ -81,19 +77,29 @@ fish and environment.d files, which are read automatically.
 
 Third-party material is in `NOTICE`. The root `LICENSE` (MIT) covers everything unless a file's SPDX header or `NOTICE` says otherwise.
 
-GTK, libadwaita and GNOME Shell themes and icon sets are not in this repo: they are deployed by their own repo, [gnome-themes](https://github.com/redcodeworks/gnome-themes).
+GTK, libadwaita and GNOME Shell themes and icon sets are not in this repo: they come from their own repo, [gnome-themes](https://github.com/redcodeworks/gnome-themes).
 
 ## Contributing
 
-`main` is protected. Push your work to `testing` (`git push origin HEAD:testing`); CI runs the tests there
-(`tools/test.sh`, also runnable locally, plus a secret scan). Open a pull request from `testing` into `main`; it can be
-merged only when both CI jobs pass.
+This is a personal setup, so there is no support and I am not looking for outside contributions or pull requests. If
+something here is useful to you, fork it and make it yours.
 
-## Keeping private things out
+## License
 
-`.gitignore` is an allow-list (everything is ignored unless named) with a long deny-list of keys, tokens, histories,
-databases and application state inside the allowed folders. `tools/leak-check.sh` scans for secrets, e-mail addresses,
-private IP and MAC addresses, home paths and a private list of personal strings kept outside the repo
-(`~/.config/dot-files/leak-patterns`, one regular expression per line). `just setup-hooks` runs it before every commit and push.
+MIT (`LICENSE`), unless a file's SPDX header or `NOTICE` says otherwise. Third-party material is listed in `NOTICE`, with
+licence texts in `LICENSES/`.
 
-Licence: MIT (`LICENSE`); third-party material is listed in `NOTICE`.
+## Credits
+
+- Colour values: [Gruvbox Material](https://github.com/sainnhe/gruvbox-material) by sainnhe (MIT) and [Gruvbox](https://github.com/morhetz/gruvbox) by morhetz.
+- The btop theme is adapted from the `gruvbox_material_dark` theme bundled with [btop](https://github.com/aristocratos/btop) (Apache-2.0).
+- The niri example config and a few fragments reproduce parts of the default config of [niri](https://github.com/YaLTeR/niri) (GPL-3.0-or-later).
+- The `y` fish function is adapted from the shell wrapper in the [Yazi](https://yazi-rs.github.io) documentation (MIT).
+- Not included, but used by the setup: GNOME Shell extensions, yazi plugins and its gruvbox-material flavor, Papirus icons, and the Nerd Fonts named in the configs, each under its own licence.
+- Written with Claude, Anthropic's coding assistant.
+
+## About this repo
+
+This is a personal project for my own machine, so please excuse the slop. It was written with Claude (Anthropic's coding
+assistant) and I have only tested it on my own setup. I will not maintain it beyond my own needs. If you find something
+valuable here, please fork it and take it from there, no need to ask.
