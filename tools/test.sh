@@ -218,7 +218,7 @@ STUB
 chmod +x "$G/bin/"*
 printf '# SPDX-License-Identifier: MIT\n# Sets alpha.\n# Load:   dconf load /org/test/alpha/ < 10-alpha.dconf\n# Undo:   dconf reset -f /org/test/alpha/\n[/]\nk=1\n' > "$G/src/gnome/10-alpha.dconf"
 printf '# SPDX-License-Identifier: MIT\n# Sets beta.\n# Load:   dconf load /org/test/beta/ < 20-beta.dconf\n# Undo:   dconf reset -f /org/test/beta/\n[/]\nk=2\n' > "$G/src/gnome/20-beta.dconf"
-printf '#!/usr/bin/env bash\nuuids=(\n    have@ext   # leak-check: allow\n    gone@ext   # leak-check: allow\n)\n' > "$G/src/gnome/30-enable-extensions.sh"
+printf '#!/usr/bin/env bash\nuuids=(\n    have@ext   # leak-check: allow\n    gone@ext   # Gone, a test; from extensions.gnome.org  # leak-check: allow\n)\n' > "$G/src/gnome/30-enable-extensions.sh"
 echo "have@ext" > "$G/data/installed"
 ga() { PATH="$G/bin:$PATH" STUBDATA="$G/data" DOT_SRC="$G/src" DOT_STATE="$G/state" $D gnome-apply "$@" 2>&1; }
 r=$(ga --dry-run); rc=$?
@@ -232,7 +232,7 @@ eq "$(cat "$G/data/dconf.log" | tr '\n' ' ')" "load /org/test/alpha/ load /org/t
 bk=$(find "$G/state/backup" -name 'dconf-10-alpha.ini' | head -1)
 eq "$(cat "$bk" 2>/dev/null)" "$(printf '[/]\nold=1')" "backup holds the values from before the load"
 [ -f "$(dirname "$bk")/dconf-20-beta.ini" ] && chk ok "a backup file per dconf file" || chk fail "missing beta backup"
-echo "$r" | grep -q 'missing   gone@ext' && echo "$r" | grep -q 'enabled   have@ext' && echo "$r" | grep -q 'Extension Manager' && chk ok "missing extension listed with the Extension Manager hint, installed one enabled" || chk fail "extension output: $r"
+echo "$r" | grep -q 'missing   gone@ext (Gone, a test; from extensions.gnome.org)' && echo "$r" | grep -q 'enabled   have@ext' && echo "$r" | grep -q 'Extension Manager' && chk ok "missing extension listed with the Extension Manager hint, installed one enabled" || chk fail "extension output: $r"
 eq "$(cat "$G/data/enable.log")" "have@ext" "only the installed extension was enabled"
 sleep 1; r=$(ga); eq "$?" 0 "second run succeeds"
 eq "$(tail -2 "$G/data/_org_test_alpha_")" "$(printf '[/]\nk=1')" "rerun: same values loaded (idempotent)"
@@ -248,6 +248,8 @@ r=$(PATH="$G/nobin" DOT_SRC="$G/src" DOT_STATE="$G/state" "$(command -v bash)" $
 [ "$rc" -ne 0 ] && echo "$r" | grep -q 'dconf not found' && chk ok "clear error when dconf is missing" || chk fail "missing dconf: $r"
 cp "$G/bin/dconf" "$G/nobin/dconf"; r=$(PATH="$G/nobin" DOT_SRC="$G/src" DOT_STATE="$G/state" "$(command -v bash)" $D gnome-apply 2>&1)
 echo "$r" | grep -q 'gsettings not found' && chk ok "clear error when gsettings is missing" || chk fail "missing gsettings: $r"
+eq "$(awk '/^uuids=\(/{on=1;next} on&&/^\)/{exit} on{print $1}' config/gnome/30-enable-extensions.sh | wc -l | tr -d ' ')" 13 "the shipped extension list has 13 entries"
+eq "$(awk '/^uuids=\(/{on=1;next} on&&/^\)/{exit} on&&!/# .*; (from extensions.gnome.org|ships with the image)/{print}' config/gnome/30-enable-extensions.sh | wc -l | tr -d ' ')" 0 "every extension entry says what it is and where it comes from"
 unset D
 
 echo "=== this repo"

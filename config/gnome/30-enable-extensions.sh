@@ -8,21 +8,19 @@
 set -u
 command -v gnome-extensions >/dev/null || { echo "gnome-extensions not found (GNOME Shell only)" >&2; exit 1; }
 uuids=(
-    GPaste@gnome-shell-extensions.gnome.org                  # leak-check: allow
-    caffeine@patapon.info                                    # leak-check: allow
-    gamemodeshellextension@trsnaqe.com                       # leak-check: allow
-    arcmenu@arcmenu.com                                      # leak-check: allow
-    CoverflowAltTab@palatis.blogspot.com                     # leak-check: allow
-    pip-on-top@rafostar.github.com                           # leak-check: allow
-    grand-theft-focus@zalckos.github.com                     # leak-check: allow
-    dash-to-dock@micxgx.gmail.com                            # leak-check: allow
-    hotedge@jonathan.jdoda.ca                                # leak-check: allow
-    user-theme@gnome-shell-extensions.gcampax.github.com     # leak-check: allow
-    blur-my-shell@aunetx                                     # leak-check: allow
-    appindicatorsupport@rgcjonas.gmail.com                   # leak-check: allow
-    forge@jmmaranan.com                                      # leak-check: allow
-    clipboard-indicator@tudmotu.com                          # leak-check: allow
-    tilingshell@ferrarodomenico.com                          # leak-check: allow
+    arcmenu@arcmenu.com                                      # ArcMenu, application menu; from extensions.gnome.org  # leak-check: allow
+    hotedge@jonathan.jdoda.ca                                # Hot Edge, pressure-edge overview trigger; from extensions.gnome.org  # leak-check: allow
+    CoverflowAltTab@palatis.blogspot.com                     # Coverflow Alt-Tab, window switcher; from extensions.gnome.org  # leak-check: allow
+    clipboard-indicator@tudmotu.com                          # Clipboard Indicator, clipboard history; from extensions.gnome.org  # leak-check: allow
+    tilingshell@ferrarodomenico.com                          # Tiling Shell, window tiling; from extensions.gnome.org  # leak-check: allow
+    dash-to-dock@micxgx.gmail.com                            # Dash to Dock; from extensions.gnome.org  # leak-check: allow
+    blur-my-shell@aunetx                                     # Blur my Shell; from extensions.gnome.org  # leak-check: allow
+    caffeine@patapon.info                                    # Caffeine, inhibit screen suspend; from extensions.gnome.org  # leak-check: allow
+    appindicatorsupport@rgcjonas.gmail.com                   # AppIndicator and KStatusNotifierItem support; from extensions.gnome.org  # leak-check: allow
+    auto-move-windows@gnome-shell-extensions.gcampax.github.com # Auto Move Windows (gnome-shell-extensions); from extensions.gnome.org  # leak-check: allow
+    background-logo@fedorahosted.org                         # Background Logo; ships with the image  # leak-check: allow
+    gsconnect@andyholmes.github.io                           # GSConnect, phone integration; ships with the image  # leak-check: allow
+    user-theme@gnome-shell-extensions.gcampax.github.com     # User Themes (gnome-shell-extensions); ships with the image  # leak-check: allow
 )
 for u in "${uuids[@]}"; do
     if gnome-extensions enable "$u" 2>/dev/null; then echo "enabled  $u"; else echo "skipped  $u (not installed?)"; fi

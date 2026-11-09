@@ -198,13 +198,18 @@ case "$cmd" in
         if [ ! -f "$ext" ]; then echo "no 30-enable-extensions.sh: extensions skipped"; exit 0; fi
         command -v gnome-extensions >/dev/null 2>&1 || { echo "gnome-extensions not found: extensions skipped (GNOME Shell only)" >&2; exit 1; }
         mapfile -t uuids < <(awk '/^uuids=\(/{on=1;next} on&&/^\)/{exit} on{print $1}' "$ext")
+        declare -A usrc
+        while IFS= read -r l; do  # the comment after the uuid says what it is and where it comes from
+            l=${l#"${l%%[![:space:]]*}"}; k=${l%%[[:space:]]*}
+            usrc[$k]=$(printf '%s' "$l" | sed 's/^[^#]*# *//; s/ *# *leak-check.*//')
+        done < <(awk '/^uuids=\(/{on=1;next} on&&/^\)/{exit} on&&$1!=""{print}' "$ext")
         installed=$(gnome-extensions list 2>/dev/null || true)
         enabled_now=$(gsettings get org.gnome.shell enabled-extensions 2>/dev/null || true)
         echo "extensions$([ "$dry" -eq 1 ] && echo ' (dry run)'):"
         missing=()
         for u in "${uuids[@]}"; do
             if ! printf '%s\n' "$installed" | grep -Fxq -- "$u"; then
-                echo "  missing   $u"; missing+=("$u")
+                echo "  missing   $u${usrc[$u]:+ (${usrc[$u]})}"; missing+=("$u")
             elif printf '%s' "$enabled_now" | grep -Fq -- "'$u'"; then
                 echo "  already   $u"
             elif [ "$dry" -eq 1 ]; then

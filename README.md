@@ -39,7 +39,7 @@ These recipe names and their output are stable, so another script (for example a
 | `just list` | apps and files this repo manages |
 | `just hint [app ...]` | print the manual step an app needs after install (the table below, from `tools/hints/<app>.txt`); no names means all apps; an app without a step prints `nothing to do`; an unknown app is an error naming the known ones |
 | `just brew [--dry-run]` | `brew bundle` on the repo's `Brewfile` (command-line tools the configs use, formulae only); `--dry-run` only lists the formulae and the command; needs Homebrew, no sudo |
-| `just gnome-apply [--dry-run]` | for each `config/gnome/*.dconf`: back up the current values of its path to `~/.local/state/dot-files/backup/<timestamp>/dconf-<name>.ini`, then `dconf load` it, printing what it changes, the path and the undo line; then enable the GNOME Shell extensions that are installed and list the missing ones (install them with the Extension Manager app, nothing is installed for you). Refuses to run as root; needs `dconf` and `gsettings`; safe to run again |
+| `just gnome-apply [--dry-run]` | for each `config/gnome/*.dconf`: back up the current values of its path to `~/.local/state/dot-files/backup/<timestamp>/dconf-<name>.ini`, then `dconf load` it, printing what it changes, the path and the undo line; then enable the GNOME Shell extensions that are installed and list the missing ones with where each comes from (the image, or extensions.gnome.org via the Extension Manager app; nothing is installed for you). Refuses to run as root; needs `dconf` and `gsettings`; safe to run again |
 
 ## Picking the files up
 
