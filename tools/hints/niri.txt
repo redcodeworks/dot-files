@@ -1,0 +1,1 @@
+Paste the `include` lines you want from `~/.config/niri/config.example.kdl` into your `config.kdl`. Needs niri 25.11+. Every included file must exist (or use `optional=true`); a deleted fragment breaks the config. The Noctalia include is commented out.

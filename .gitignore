@@ -9,6 +9,7 @@
 !/tools
 !/config
 !/justfile
+!/Brewfile
 !/README.md
 !/AGENTS.md
 !/LICENSE

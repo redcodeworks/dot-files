@@ -1,0 +1,1 @@
+Add `config-file = ?dotfiles.ghostty` to your ghostty config. The fragments load after the file that names them, so they override that file; put your own overrides in a second file loaded after (`config-file = ?my.ghostty`).

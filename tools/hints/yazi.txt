@@ -1,0 +1,1 @@
+Install the plugins and flavor: `ya pkg add yazi-rs/plugins:git yazi-rs/plugins:piper yazi-rs/plugins:full-border yazi-rs/plugins:smart-enter yazi-rs/plugins:mount ndtoan96/ouch boydaihungst/mediainfo matt-dong-123/gruvbox-material`. Previewers also call `glow`, `ouch`, `mediainfo`, `jq`, `eza`.

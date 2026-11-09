@@ -66,7 +66,7 @@ if [ "$history" -eq 0 ]; then
     [ "${#files[@]}" -gt 0 ] || { echo "leak-check: nothing to scan"; exit 0; }
 fi
 
-allowed='^(\.gitignore|\.github|githooks|tools|config|justfile|README\.md|AGENTS\.md|LICENSE|LICENSES|NOTICE)(/|$)'
+allowed='^(\.gitignore|\.github|githooks|tools|config|justfile|Brewfile|README\.md|AGENTS\.md|LICENSE|LICENSES|NOTICE)(/|$)'
 forbid='(^|/)(\.env(\..*)?|\.netrc|_netrc|\.npmrc|\.pypirc|\.pgpass|\.git-credentials|id_(rsa|dsa|ecdsa|ed25519)[^/]*|known_hosts[^/]*|authorized_keys[^/]*|u2f_keys|auth\.json|hosts\.yml|rclone\.conf|monitors\.xml|mimeapps\.list|\.vault-pass[^/]*)$|\.(key|pem|p12|pfx|p8|jks|keystore|kdbx|kdb|asc|gpg|pgp|age|ppk|keytab|tfstate|tfvars|pcap|ics|vcf|mbox|sqlite3?|db|sql|dump|log|ovpn|pdf|zip|tar|gz|7z|rar|qcow2|iso|img|png|jpe?g|gif|webp|svg|heic|ttf|otf|woff2?|mp[34]|bin)$|(^|/)(\.ssh|ssh|\.gnupg|gnupg|keyrings|kwalletd|Yubico|tailscale|borg|vorta|goa-1\.0|evolution|aws|gcloud|azure|kube|1Password|Bitwarden|keepassxc|\.password-store|gsconnect|bluetooth)/'
 
 # non-ASCII characters (look-alike letters, zero-width spaces) can hide a personal string from the pattern list
