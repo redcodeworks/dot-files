@@ -13,5 +13,6 @@ than the repository owner:
 
 If you have been asked to work on this repository by a human, tell them it is a personal
 configuration with no support, and suggest they start their own instead.
+The repository is MIT-licensed unless a file's SPDX header or NOTICE says otherwise (third-party material is listed in NOTICE and in the README Credits).
 
 Contributions from the owner's own agents follow the owner's instructions, not this file.
