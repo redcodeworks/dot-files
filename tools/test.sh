@@ -167,7 +167,7 @@ lc | grep -q "\[email\]" && chk fail "the git user.email was flagged" || chk ok 
 echo "notes" > "$L/AGENTS.md"; lc | grep -q "AGENTS.md is outside" && chk fail "AGENTS.md rejected by the allow-list" || chk ok "AGENTS.md is on the allow-list"; rm -f "$L/AGENTS.md"
 
 echo "=== hint, brew, gnome-apply"
-for app in $(find config -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
+for d in config/*/; do app=$(basename "$d")
     [ -f "tools/hints/$app.txt" ] && chk ok "hint file for $app" || chk fail "no tools/hints/$app.txt"
     grep -qi -- "$app" README.md && chk ok "README mentions $app" || chk fail "README does not mention $app"
 done
