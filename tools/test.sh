@@ -183,6 +183,20 @@ err=$(DOT_SRC="$T/h/src" DOT_HINTS="$T/h/hints" $D hint nope 2>&1); rc=$?
 [ "$($D hint | grep -c '^== ')" = "$(find config -mindepth 1 -maxdepth 1 -type d | wc -l)" ] && chk ok "hint without names covers every app" || chk fail "hint without names"
 just hint kitty | grep -q globinclude && chk ok "just hint" || chk fail "just hint"
 
+# describe
+while IFS= read -r d; do app=$(basename "$d")
+    n=$(awk -F'\t' -v a="$app" '$1 == a' tools/descriptions.tsv | wc -l | tr -d ' ')
+    [ "$n" = 1 ] && chk ok "description for $app" || chk fail "tools/descriptions.tsv needs exactly one line for $app (found $n)"
+done < <(find config -mindepth 1 -maxdepth 1 -type d | sort)
+bad=$(awk -F'\t' 'NF != 2 || $1 == "" || $2 == "" || $2 ~ /\r/' tools/descriptions.tsv | wc -l | tr -d ' '); eq "$bad" 0 "descriptions: two non-empty tab-separated fields per line"
+out=$($D describe 2>/dev/null); rc=$?; eq "$rc" 0 "describe exits 0"
+eq "$(echo "$out" | awk -F'\t' '{print $1}')" "$($D list | awk 'NF && $2 ~ /^[0-9]+$/ {print $1}')" "describe lists the apps in the order of list"
+eq "$(echo "$out" | awk -F'\t' 'NF != 2' | wc -l | tr -d ' ')" 0 "describe prints app TAB description only"
+eq "$($D describe kitty | wc -l | tr -d ' ')" 1 "describe <app> prints one line"
+[ "$($D describe kitty | cut -f1)" = kitty ] && chk ok "describe <app> prints that app" || chk fail "describe kitty"
+err=$($D describe nope 2>&1 >/dev/null); rc=$?; [ "$rc" -ne 0 ] && echo "$err" | grep -q 'unknown app: nope (known apps:' && chk ok "describe: unknown app is an error" || chk fail "describe unknown app"
+eq "$(just describe fish | cut -f1)" fish "just describe"
+
 # brew
 $D brew --dry-run | grep -q '^would run: brew bundle --file=.*/Brewfile$' && chk ok "brew --dry-run prints the command" || chk fail "brew --dry-run"
 eq "$($D brew --dry-run | sed -n 's/^  //p' | wc -l | tr -d ' ')" "$(grep -c '^brew "' Brewfile)" "brew --dry-run lists every formula"
