@@ -1,0 +1,1 @@
+Add `globinclude dotfiles.d/*.conf` to `kitty.conf`.

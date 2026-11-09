@@ -31,9 +31,23 @@ else. Files come from `config/<app>/...` and land in `~/.config/<app>/...`.
 Most of it is **drop-in files** (`conf.d`, `include`d fragments) with numbered names, so they sit next to your own files
 instead of replacing them. Where an app needs one line in your own main config to pick a fragment up, it is listed below.
 
+### Recipes for scripts and ujust
+
+These recipe names and their output are stable, so another script (for example a `ujust` checklist) can call them from a checkout:
+
+| Recipe | What it does |
+|---|---|
+| `just install [preserve\|overwrite] [app ...]` | copy `config/` into `~/.config` |
+| `just status [app ...]` | per file: new, same, update or modified |
+| `just diff [app ...]` | diffs for everything that differs |
+| `just list` | apps and files this repo manages |
+| `just hint [app ...]` | print the manual step an app needs after install (the table below, from `tools/hints/<app>.txt`); no names means all apps; an app without a step prints `nothing to do`; an unknown app is an error naming the known ones |
+| `just brew [--dry-run]` | `brew bundle` on the repo's `Brewfile` (command-line tools the configs use, formulae only); `--dry-run` only lists the formulae and the command; needs Homebrew, no sudo |
+| `just gnome-apply [--dry-run]` | for each `config/gnome/*.dconf`: back up the current values of its path to `~/.local/state/dot-files/backup/<timestamp>/dconf-<name>.ini`, then `dconf load` it, printing what it changes, the path and the undo line; then enable the GNOME Shell extensions that are installed and list the missing ones (install them with the Extension Manager app, nothing is installed for you). Refuses to run as root; needs `dconf` and `gsettings`; safe to run again |
+
 ## Picking the files up
 
-`just install` copies the files; most apps then need one step by hand. Nothing is switched on without it, except the
+`just install` copies the files; most apps then need one step by hand (`just hint <app>` prints it). Nothing is switched on without it, except the
 fish and environment.d files, which are read automatically.
 
 | App | What `just install` drops | Your step |
@@ -48,7 +62,7 @@ fish and environment.d files, which are read automatically.
 | yazi | `yazi.toml`, `keymap.toml`, `theme.toml`, `init.lua` | Install the plugins and flavor: `ya pkg add yazi-rs/plugins:git yazi-rs/plugins:piper yazi-rs/plugins:full-border yazi-rs/plugins:smart-enter yazi-rs/plugins:mount ndtoan96/ouch boydaihungst/mediainfo matt-dong-123/gruvbox-material`. Previewers also call `glow`, `ouch`, `mediainfo`, `jq`, `eza` |
 | fish | `conf.d/*.fish`, `functions/y.fish`, `fish_greeting.fish` | Nothing: `conf.d` is read automatically. No fisher plugins are needed |
 | environment.d | brew PATH | Nothing; read at your next login |
-| gnome | `gnome/*.dconf`, `30-enable-extensions.sh` | `dconf load <path> < file` (the path and an undo line are in each file's header); the extensions must be installed first, then `bash ~/.config/gnome/30-enable-extensions.sh` |
+| gnome | `gnome/*.dconf`, `30-enable-extensions.sh` | `just gnome-apply` (or by hand: `dconf load <path> < file`, the path and an undo line are in each file's header; the extensions must be installed first, then `bash ~/.config/gnome/30-enable-extensions.sh`) |
 | gamemode, noctalia, xdg-desktop-portal | `*.example.*` files | Examples: copy to the real name (`~/.config/gamemode.ini`, `~/.config/noctalia/config.toml`, `~/.config/xdg-desktop-portal/niri-portals.conf`) and edit |
 
 ### What it changes on your machine

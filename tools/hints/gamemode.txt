@@ -1,0 +1,1 @@
+Example only: copy `gamemode.example.ini` to the real name (`~/.config/gamemode.ini`) and edit.

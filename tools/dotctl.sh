@@ -5,6 +5,9 @@
 #   dotctl.sh status [app ...]                                new / same / update / modified, per file
 #   dotctl.sh diff [app ...]                                  unified diffs for files that differ
 #   dotctl.sh list                                            managed apps and files
+#   dotctl.sh hint [app ...]                                  the manual step an app needs after install (tools/hints/<app>.txt)
+#   dotctl.sh brew [--dry-run]                                brew bundle --file=<repo>/Brewfile (command-line tools the configs use)
+#   dotctl.sh gnome-apply [--dry-run]                         back up, then load config/gnome/*.dconf; enable installed extensions
 # An "app" is a top-level directory of config/ (fish, niri, ...). Default mode keeps your changes:
 #   - missing file ......................... copied
 #   - identical ............................ left alone
@@ -125,5 +128,97 @@ case "$cmd" in
         done < <(files)
         echo "$([ "$dry" -eq 1 ] && echo 'dry run: ')$copied new, $replaced replaced, $kept kept, $same already identical" ;;
 
-    *) sed -n '3,14p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 2 ;;
+    hint)
+        hints="${DOT_HINTS:-$root/tools/hints}"
+        known=$( { [ -d "$src" ] && find "$src" -mindepth 1 -maxdepth 1 -type d -printf '%f\n'; find "$hints" -maxdepth 1 -name '*.txt' -printf '%f\n' 2>/dev/null | sed 's/\.txt$//'; } | LC_ALL=C sort -u)
+        [ "${#apps[@]}" -gt 0 ] || mapfile -t apps <<< "$known"
+        for app in "${apps[@]}"; do
+            printf '%s\n' "$known" | grep -Fxq -- "$app" || { echo "unknown app: $app (known apps: $(printf '%s' "$known" | tr '\n' ' ' | sed 's/ $//'))" >&2; exit 1; }
+        done
+        first=1
+        for app in "${apps[@]}"; do
+            [ "$first" -eq 1 ] || echo; first=0
+            echo "== $app"
+            if [ -f "$hints/$app.txt" ]; then cat "$hints/$app.txt"; else echo "nothing to do"; fi
+        done ;;
+
+    brew)
+        bf="${DOT_BREWFILE:-$root/Brewfile}"
+        [ -f "$bf" ] || { echo "no Brewfile at $bf" >&2; exit 1; }
+        if [ "$dry" -eq 1 ]; then
+            echo "Brewfile: $bf"
+            echo "formulae:"
+            sed -n 's/^brew "\([^"]*\)".*/  \1/p' "$bf"
+            echo "would run: brew bundle --file=$bf"
+            exit 0
+        fi
+        brewbin="${DOT_BREW:-brew}"
+        if ! command -v "$brewbin" >/dev/null 2>&1; then
+            if [ -z "${DOT_BREW:-}" ] && [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then brewbin=/home/linuxbrew/.linuxbrew/bin/brew
+            else echo "brew is not installed or not on PATH (see https://brew.sh); nothing was done" >&2; exit 1; fi
+        fi
+        exec "$brewbin" bundle --file="$bf" ;;
+
+    gnome-apply)
+        [ "$(id -u)" -ne 0 ] || { echo "gnome-apply changes the dconf settings of a user session: run it as your own user, not root" >&2; exit 1; }
+        for t in dconf gsettings; do command -v "$t" >/dev/null 2>&1 || { echo "$t not found (needs a GNOME session's dconf and gsettings tools)" >&2; exit 1; }; done
+        gdir="$src/gnome"; [ -d "$gdir" ] || { echo "no gnome directory at $gdir" >&2; exit 1; }
+        shopt -s nullglob; dfiles=("$gdir"/*.dconf); shopt -u nullglob
+        [ "${#dfiles[@]}" -gt 0 ] || { echo "no *.dconf files in $gdir" >&2; exit 1; }
+        # read every header first: one bad file stops the run before anything is loaded
+        declare -A dpath dundo ddesc
+        for f in "${dfiles[@]}"; do
+            n=$(basename "$f")
+            dpath[$n]=$(sed -n 's/^# Load:[[:space:]]*dconf load \([^[:space:]]*\)[[:space:]]*<.*/\1/p' "$f" | head -1)
+            [ -n "${dpath[$n]}" ] || { echo "$n: header has no '# Load:   dconf load <path> < <file>' line" >&2; exit 1; }
+            dundo[$n]=$(sed -n 's/^# \(Undo:.*\)/\1/p' "$f" | head -1 | sed 's/[[:space:]]\{2,\}/ /g')
+            [ -n "${dundo[$n]}" ] || { echo "$n: header has no '# Undo:' line" >&2; exit 1; }
+            ddesc[$n]=$(grep -m1 -v -e '^# SPDX' -e '^#!' -e '^[^#]' "$f" | sed 's/^# \{0,1\}//')
+        done
+        ts=$(date +%Y%m%d-%H%M%S); bdir="$state/backup/$ts"
+        [ "$dry" -eq 1 ] && echo "dry run: nothing is backed up or loaded"
+        for f in "${dfiles[@]}"; do
+            n=$(basename "$f"); b="dconf-${n%.dconf}.ini"
+            echo "$n"
+            echo "  changes: ${ddesc[$n]}"
+            echo "  path:    ${dpath[$n]}"
+            echo "  ${dundo[$n]}"
+            if [ "$dry" -eq 1 ]; then
+                echo "  would back up the current values to $bdir/$b, then: dconf load ${dpath[$n]}"
+            else
+                mkdir -p "$bdir"
+                dconf dump "${dpath[$n]}" > "$bdir/$b" || { echo "dconf dump ${dpath[$n]} failed; not loading $n" >&2; exit 1; }
+                dconf load "${dpath[$n]}" < "$f" || { echo "dconf load ${dpath[$n]} failed ($n)" >&2; exit 1; }
+                echo "  loaded; previous values in $bdir/$b"
+            fi
+        done
+        echo
+        # extensions: the list comes from 30-enable-extensions.sh; only installed ones are enabled, nothing is installed
+        ext="$gdir/30-enable-extensions.sh"
+        if [ ! -f "$ext" ]; then echo "no 30-enable-extensions.sh: extensions skipped"; exit 0; fi
+        command -v gnome-extensions >/dev/null 2>&1 || { echo "gnome-extensions not found: extensions skipped (GNOME Shell only)" >&2; exit 1; }
+        mapfile -t uuids < <(awk '/^uuids=\(/{on=1;next} on&&/^\)/{exit} on{print $1}' "$ext")
+        installed=$(gnome-extensions list 2>/dev/null || true)
+        enabled_now=$(gsettings get org.gnome.shell enabled-extensions 2>/dev/null || true)
+        echo "extensions$([ "$dry" -eq 1 ] && echo ' (dry run)'):"
+        missing=()
+        for u in "${uuids[@]}"; do
+            if ! printf '%s\n' "$installed" | grep -Fxq -- "$u"; then
+                echo "  missing   $u"; missing+=("$u")
+            elif printf '%s' "$enabled_now" | grep -Fq -- "'$u'"; then
+                echo "  already   $u"
+            elif [ "$dry" -eq 1 ]; then
+                echo "  would enable $u"
+            elif gnome-extensions enable "$u" 2>/dev/null; then
+                echo "  enabled   $u"
+            else
+                echo "  failed    $u (a new extension may need a log out and in first)"
+            fi
+        done
+        if [ "${#missing[@]}" -gt 0 ]; then
+            echo
+            echo "${#missing[@]} extension(s) not installed, not enabled. Install them with the Extension Manager app, then run this again."
+        fi ;;
+
+    *) sed -n '3,/^set -euo/p' "${BASH_SOURCE[0]}" | sed '$d; s/^# \{0,1\}//'; exit 2 ;;
 esac

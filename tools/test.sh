@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
-# Test suite for dotctl.sh, the justfile, .gitignore and leak-check.sh. Uses temp directories only.
+# Test suite for dotctl.sh (install, hint, brew, gnome-apply), the justfile, .gitignore and leak-check.sh. Uses temp directories only.
 #   tools/test.sh
 set -u
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
@@ -165,6 +165,90 @@ rm -rf "$L/.github/workflows/secrets.yml"
 (cd "$L" && git config user.email "owner""@host.test"); echo "License (c) Owner <owner""@host.test>" > "$L/config/app/P1.conf"
 lc | grep -q "\[email\]" && chk fail "the git user.email was flagged" || chk ok "the repo's own git user.email is allowed"; rm -f "$L/config/app/P1.conf"; (cd "$L" && git config --unset user.email)
 echo "notes" > "$L/AGENTS.md"; lc | grep -q "AGENTS.md is outside" && chk fail "AGENTS.md rejected by the allow-list" || chk ok "AGENTS.md is on the allow-list"; rm -f "$L/AGENTS.md"
+
+echo "=== hint, brew, gnome-apply"
+for app in $(find config -mindepth 1 -maxdepth 1 -type d -printf '%f\n'); do
+    [ -f "tools/hints/$app.txt" ] && chk ok "hint file for $app" || chk fail "no tools/hints/$app.txt"
+    grep -qi -- "$app" README.md && chk ok "README mentions $app" || chk fail "README does not mention $app"
+done
+for h in tools/hints/*.txt; do [ -d "config/$(basename "$h" .txt)" ] && chk ok "hint $h belongs to an app" || chk fail "hint $h has no config/ app"; done
+D=tools/dotctl.sh
+out=$($D hint ghostty); eq "$(echo "$out" | head -1)" "== ghostty" "hint: heading line"
+echo "$out" | grep -q 'config-file = ?dotfiles.ghostty' && chk ok "hint: ghostty text" || chk fail "hint: ghostty text"
+$D hint yazi | grep -q 'ya pkg add yazi-rs/plugins:git' && chk ok "hint: yazi ya pkg add" || chk fail "hint: yazi"
+mkdir -p "$T/h/src/known" "$T/h/src/bare" "$T/h/hints"; echo "do this" > "$T/h/hints/known.txt"
+eq "$(DOT_SRC="$T/h/src" DOT_HINTS="$T/h/hints" $D hint bare)" "$(printf '== bare\nnothing to do')" "hint: an app without a hint prints nothing to do"
+err=$(DOT_SRC="$T/h/src" DOT_HINTS="$T/h/hints" $D hint nope 2>&1); rc=$?
+[ "$rc" -ne 0 ] && echo "$err" | grep -q 'unknown app: nope (known apps: bare known)' && chk ok "hint: unknown app is an error naming the known apps" || chk fail "hint: unknown app: $err"
+[ "$($D hint | grep -c '^== ')" = "$(find config -mindepth 1 -maxdepth 1 -type d | wc -l)" ] && chk ok "hint without names covers every app" || chk fail "hint without names"
+just hint kitty | grep -q globinclude && chk ok "just hint" || chk fail "just hint"
+
+# brew
+$D brew --dry-run | grep -q '^would run: brew bundle --file=.*/Brewfile$' && chk ok "brew --dry-run prints the command" || chk fail "brew --dry-run"
+eq "$($D brew --dry-run | sed -n 's/^  //p' | wc -l | tr -d ' ')" "$(grep -c '^brew "' Brewfile)" "brew --dry-run lists every formula"
+grep -qE '^(cask|tap|vscode|mas) ' Brewfile && chk fail "Brewfile has a cask, tap or other non-formula line" || chk ok "Brewfile: formulae only"
+mkdir -p "$T/bb"; printf '#!/bin/sh\necho "brew $*" > "%s/brew.log"\n' "$T/bb" > "$T/bb/brew"; chmod +x "$T/bb/brew"
+DOT_BREW="$T/bb/brew" $D brew >/dev/null; grep -q "^brew bundle --file=$root/Brewfile$" "$T/bb/brew.log" && chk ok "brew runs brew bundle on the repo Brewfile" || chk fail "brew bundle call: $(cat "$T/bb/brew.log" 2>&1)"
+err=$(DOT_BREW=/nonexistent/brew $D brew 2>&1); rc=$?; [ "$rc" -ne 0 ] && echo "$err" | grep -q 'brew is not installed' && chk ok "brew: clear error without brew" || chk fail "brew without brew"
+for f in config/gnome/*.dconf; do
+    grep -qE '^# Load:[[:space:]]+dconf load [^[:space:]]+ <' "$f" && grep -q '^# Undo:' "$f" && chk ok "header has Load and Undo: $f" || chk fail "header lacks Load or Undo: $f"
+done
+
+# gnome-apply with stubbed dconf, gsettings and gnome-extensions
+G="$T/ga"; mkdir -p "$G/bin" "$G/src/gnome" "$G/state" "$G/data"
+cat > "$G/bin/dconf" <<'STUB'
+#!/bin/sh
+f="$STUBDATA/$(echo "$2" | tr / _)"
+case "$1" in
+  dump) if [ -f "$f" ]; then cat "$f"; else printf '[/]\nold=1\n'; fi ;;
+  load) cat > "$f"; echo "load $2" >> "$STUBDATA/dconf.log" ;;
+esac
+STUB
+cat > "$G/bin/gsettings" <<'STUB'
+#!/bin/sh
+[ "$1" = get ] && cat "$STUBDATA/enabled" 2>/dev/null || echo "@as []"
+STUB
+cat > "$G/bin/gnome-extensions" <<'STUB'
+#!/bin/sh
+case "$1" in
+  list) cat "$STUBDATA/installed" ;;
+  enable) echo "$2" >> "$STUBDATA/enable.log"; grep -q "'$2'" "$STUBDATA/enabled" 2>/dev/null || echo "['$2']" >> "$STUBDATA/enabled" ;;
+esac
+STUB
+chmod +x "$G/bin/"*
+printf '# SPDX-License-Identifier: MIT\n# Sets alpha.\n# Load:   dconf load /org/test/alpha/ < 10-alpha.dconf\n# Undo:   dconf reset -f /org/test/alpha/\n[/]\nk=1\n' > "$G/src/gnome/10-alpha.dconf"
+printf '# SPDX-License-Identifier: MIT\n# Sets beta.\n# Load:   dconf load /org/test/beta/ < 20-beta.dconf\n# Undo:   dconf reset -f /org/test/beta/\n[/]\nk=2\n' > "$G/src/gnome/20-beta.dconf"
+printf '#!/usr/bin/env bash\nuuids=(\n    have@ext   # leak-check: allow\n    gone@ext   # leak-check: allow\n)\n' > "$G/src/gnome/30-enable-extensions.sh"
+echo "have@ext" > "$G/data/installed"
+ga() { PATH="$G/bin:$PATH" STUBDATA="$G/data" DOT_SRC="$G/src" DOT_STATE="$G/state" $D gnome-apply "$@" 2>&1; }
+r=$(ga --dry-run); rc=$?
+eq "$rc" 0 "gnome-apply --dry-run succeeds"
+[ ! -e "$G/data/dconf.log" ] && [ ! -e "$G/data/enable.log" ] && [ ! -e "$G/state/backup" ] && chk ok "dry run loads, enables and backs up nothing" || chk fail "dry run changed something"
+echo "$r" | grep -q 'changes: Sets alpha.' && echo "$r" | grep -q 'path:    /org/test/alpha/' && echo "$r" | grep -q 'Undo: dconf reset -f /org/test/alpha/' && chk ok "plan shows change, path and undo" || chk fail "plan output: $r"
+r=$(ga); rc=$?
+eq "$rc" 0 "gnome-apply succeeds"
+eq "$(tail -2 "$G/data/_org_test_alpha_")" "$(printf '[/]\nk=1')" "gnome-apply loads the file into its path"
+eq "$(cat "$G/data/dconf.log" | tr '\n' ' ')" "load /org/test/alpha/ load /org/test/beta/ " "gnome-apply loads every file"
+bk=$(find "$G/state/backup" -name 'dconf-10-alpha.ini' | head -1)
+eq "$(cat "$bk" 2>/dev/null)" "$(printf '[/]\nold=1')" "backup holds the values from before the load"
+[ -f "$(dirname "$bk")/dconf-20-beta.ini" ] && chk ok "a backup file per dconf file" || chk fail "missing beta backup"
+echo "$r" | grep -q 'missing   gone@ext' && echo "$r" | grep -q 'enabled   have@ext' && echo "$r" | grep -q 'Extension Manager' && chk ok "missing extension listed with the Extension Manager hint, installed one enabled" || chk fail "extension output: $r"
+eq "$(cat "$G/data/enable.log")" "have@ext" "only the installed extension was enabled"
+sleep 1; r=$(ga); eq "$?" 0 "second run succeeds"
+eq "$(tail -2 "$G/data/_org_test_alpha_")" "$(printf '[/]\nk=1')" "rerun: same values loaded (idempotent)"
+echo "$r" | grep -q 'already   have@ext' && eq "$(wc -l < "$G/data/enable.log" | tr -d ' ')" 1 "rerun: nothing enabled twice" || chk fail "rerun extension output: $r"
+bk2=$(find "$G/state/backup" -name 'dconf-10-alpha.ini' | wc -l | tr -d ' '); eq "$bk2" 2 "rerun makes a fresh backup, keeps the old"
+# a file without a Load line stops the run before anything is loaded
+printf '# SPDX-License-Identifier: MIT\n# Broken.\n# Undo: dconf reset -f /x/\n[/]\nk=1\n' > "$G/src/gnome/15-bad.dconf"; rm -f "$G/data/dconf.log"
+r=$(ga); rc=$?; [ "$rc" -ne 0 ] && echo "$r" | grep -q '15-bad.dconf' && [ ! -e "$G/data/dconf.log" ] && chk ok "a header without a Load line fails by name before loading" || chk fail "missing header: $r"
+rm -f "$G/src/gnome/15-bad.dconf"
+# missing tools
+mkdir -p "$G/nobin"; for t in bash sed head grep awk date basename mkdir id cat tr wc dirname; do ln -sf "$(command -v $t)" "$G/nobin/$t"; done
+r=$(PATH="$G/nobin" DOT_SRC="$G/src" DOT_STATE="$G/state" "$(command -v bash)" $D gnome-apply 2>&1); rc=$?
+[ "$rc" -ne 0 ] && echo "$r" | grep -q 'dconf not found' && chk ok "clear error when dconf is missing" || chk fail "missing dconf: $r"
+cp "$G/bin/dconf" "$G/nobin/dconf"; r=$(PATH="$G/nobin" DOT_SRC="$G/src" DOT_STATE="$G/state" "$(command -v bash)" $D gnome-apply 2>&1)
+echo "$r" | grep -q 'gsettings not found' && chk ok "clear error when gsettings is missing" || chk fail "missing gsettings: $r"
+unset D
 
 echo "=== this repo"
 cd "$root" || exit 1; r=$(tools/leak-check.sh 2>&1); echo "$r" | tail -1 | grep -q "clean" && chk ok "tools/leak-check.sh is clean on this repo" || { chk fail "leak-check findings on this repo"; echo "$r" | head -10; }

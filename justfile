@@ -21,6 +21,18 @@ diff *apps:
 list:
     @tools/dotctl.sh list
 
+# Print the manual step each app needs after install (tools/hints/<app>.txt); no app names = all apps
+hint *apps:
+    @tools/dotctl.sh hint {{apps}}
+
+# Install the command-line tools the configs use from the Brewfile with Homebrew (--dry-run lists them and the command only)
+brew *args:
+    @tools/dotctl.sh brew {{args}}
+
+# GNOME: back up, then load config/gnome/*.dconf into dconf and enable the extensions that are installed (--dry-run shows the plan)
+gnome-apply *args:
+    @tools/dotctl.sh gnome-apply {{args}}
+
 # Run the test suite (development)
 [private]
 test:
