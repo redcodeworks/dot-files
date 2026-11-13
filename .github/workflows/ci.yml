@@ -1,23 +1,28 @@
 # SPDX-License-Identifier: MIT
-# Branching: main is protected. Push to `testing`; this workflow runs on that push only (one run per push). The required
-# checks `test` and `secrets` are matched by name, so the push run's checks on the pull request's head commit satisfy them.
-# A pull request can only be merged into main when both jobs below pass.
+# Branching (GitLab Flow): feature branches -> pull request into `testing` (squash) -> promotion pull request testing -> main.
+# Dev lane: a push to any branch except main and testing, and every pull request into testing, runs the checks below.
+# Testing lane: a push to testing runs the same checks (this repo publishes nothing, so there is no build step; main is the
+# reviewed result and runs no CI of its own except the require-testing-branch check on the promotion pull request).
+# The checks `test` and `secrets` are matched by name; testing requires both, main requires both plus require-testing-branch.
 # Third-party actions and downloads are pinned: actions by commit SHA, binaries by sha256.
 name: ci
 
 on:
   push:
+    branches-ignore: [main]
+  pull_request:
     branches: [testing]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # Required check "test": dotctl behaviour, .gitignore rules, the leak scanner on fixtures and on this repo and its history.
+  # Check "test": dotctl behaviour, .gitignore rules, the leak scanner on fixtures and on this repo and its history.
   test:
     runs-on: ubuntu-24.04
     steps:
@@ -46,7 +51,7 @@ jobs:
           tools/leak-check.sh
           tools/leak-check.sh --history
 
-  # Required check "secrets": gitleaks over the whole history.
+  # Check "secrets": gitleaks over the whole history.
   secrets:
     runs-on: ubuntu-24.04
     steps:
