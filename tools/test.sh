@@ -292,5 +292,14 @@ cd "$root" || exit 1; r=$(tools/leak-check.sh 2>&1); echo "$r" | tail -1 | grep 
 for f in tools/*.sh githooks/*; do bash -n "$f" && chk ok "bash -n $f" || chk fail "bash -n $f"; done
 if command -v shellcheck >/dev/null 2>&1; then shellcheck -S warning tools/*.sh >/dev/null 2>&1 && chk ok "shellcheck" || { chk fail "shellcheck"; shellcheck -S warning tools/*.sh | head; }; else echo "  skip shellcheck (not installed)"; fi
 
+echo "=== workflows (GitLab Flow)"
+ci=.github/workflows/ci.yml; rt=.github/workflows/require-testing-branch.yml
+grep -q '^  test:' "$ci" && grep -q '^  secrets:' "$ci" && chk ok "ci.yml keeps the jobs test and secrets" || chk fail "ci.yml job names changed"
+grep -q 'branches-ignore: \[main\]' "$ci" && chk ok "ci.yml: pushes to every branch but main run the checks" || chk fail "ci.yml push trigger"
+grep -A1 '^  pull_request:' "$ci" | grep -q 'branches: \[testing\]' && chk ok "ci.yml: pull requests into testing run the checks" || chk fail "ci.yml pull_request trigger"
+grep -q 'leak-check.sh' "$ci" && chk ok "ci.yml runs the leak check" || chk fail "ci.yml lacks the leak check"
+grep -q '^name: require-testing-branch' "$rt" && grep -q '^  require-testing-branch:' "$rt" && chk ok "require-testing-branch workflow and job name" || chk fail "require-testing-branch names"
+grep -A1 '^  pull_request:' "$rt" | grep -q 'branches: \[main\]' && grep -q '"testing"' "$rt" && chk ok "require-testing-branch: PRs into main must come from testing" || chk fail "require-testing-branch logic"
+
 echo; echo "TOTAL: $pass PASS, $fail FAIL"
 [ "$fail" -eq 0 ]
